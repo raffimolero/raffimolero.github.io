@@ -127,8 +127,8 @@ function gridStr(squares) {
 }
 
 function pokeHoles(grid, target) {
-    if (target > 60) {
-        alert("this will take far too long. don't generate more than 60.");
+    if (target > 50) {
+        alert("don't generate more than 50 holes. It takes too long.");
         return;
     }
     let filled = arrayRange(81);
