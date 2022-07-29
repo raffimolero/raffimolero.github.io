@@ -1,0 +1,38 @@
+table {
+    border-spacing: 0;
+    border: 0.25vh gray solid;
+    /* border-radius: 1vh; */
+}
+
+td {
+    padding: 0;
+}
+
+td * {
+    margin: auto;
+}
+
+.tile {
+    background-size: cover;
+    background-position: center;
+    
+    display: block;
+    width: 10vh;
+    height: 10vh;
+    border: 0.25vh white solid;
+    border-radius: 1vh;
+}
+.tile:hover {
+    zoom: 150%;
+    offset: 0 -50%; 
+    opacity: 100%;
+}
+
+.tile.clickable {
+    border-color: lightblue;
+    border-style: dashed;
+}
+.clickable:hover {
+    cursor: pointer;
+    border: 0.5vh red solid;
+}
