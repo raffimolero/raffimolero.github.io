@@ -1,32 +1,13 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="style.css">
-  </head>
+  <head></head>
   <body>
-    <h2>Guide</h2>
-    <p>You cannot play sudoku directly yet. You can adjust the screen size by dragging the top border of this little display box. This increases the height and in turn increases the size of each tile.
-Opening up the console will show you the solution using numbers. The numbering goes from 0-9, in order that they appear on <a href="https://hololive.hololivepro.com/en/talents?gp=indonesia">the official HoloID page.</a></p>
+    <h1 id="message">Welcome to the vector problem generator.</h1>
+    <button onclick="newProblem()">New Problem</button>
+    <button onclick="showSolution()">Show Solution</button>
     <br>
-    <p>You can customize the number of holes in the board.</p>
-    <label>hole count</label>
-    <input id="holeCount" type="number" value="40">
-    <button onclick="generate()">Generate</button>
-    <div id="board"></div>
-    <h2>Patch notes</h2>
-    <ol>
-      <li>the plan is just a little (Patch 8: hah, "little") project in jsfiddle. i can save a project and link it from here. i have the images laid out in a table. i need to emphasize the 3 by 3 borders though, so i'll have to change the way i structure the table. The hardest part of all this seems to be generating the damn grid. I'll have to do some research.</li>
-      <li>Thanks to <a href="https://www.codeproject.com/Articles/23206/Sudoku-Algorithm-Generates-a-Valid-Sudoku-in-0-018">this guy</a> I now have a working algorithm written in JS that produces a whole solved sudoku board. I don't know if it's completely bug-free, but it seems to work. Now I gotta poke some holes in it.</li>
-      <li>I can now generate sudoku boards. I have not a single clue whether they're correctly generated. (*Refer to EDIT 6) I hope to Matsuri my spaghetti is correct. It's quite sloppy, it can't reliably delete every tile it wants to.</li>
-      <li>3 by 3 borders now display.</li>
-      <li>It is 1:06 A.M. Do you know how difficult it is to write a Sudoku generator? I want to commit sudoku and it's not the kind I'm developing rn /j I need sleep holy hell. Generating the puzzle requires solving the puzzle. For every single space you take out. And if I want it to have any reasonable difficulty, I'll have to make a solver that only uses certain techniques. Which means coding those techniques. Grr. Should've just grabbed a normal generator somewhere.</li>
-      <li>Bug in the code means they're probably unsolvable.</li>
-      <li>Fixed. Hopefully. It looks like it generates exactly 50 holes (as specified) and the solution in the console seems to check out at first glance because I won't be bothered to check. I'll go play one round and go to bed.</li>
-      <li>It's too difficult at 50 holes. I'd putting a setting to lower the number of holes, and code a smarter algorithm, but I've already borrowed too much of tomorrow's time and brain power. I'll just nerf the thing to like 40 and go. Y'all can deal with it. Probably.</li>
-      <li>40 holes is still too difficult. It's 2:46 A.M. I started solving at like 2:00. These patch notes are getting too long for Reddit. I'm moving them into the HTML and I'm out of here.</li>
-      <li>I have made a hole count thingy. In the process, I have discovered that my program doesn't guarantee that there's only one solution.</li>
-      <li>It is currently <a href="https://www.youtube.com/watch?v=0QwHPgMHPkQ">Sanji Juunihun.</a></li>
-    </ol>
-    <script src="main.js"></script>
+    <h2 id="scaling">Scale: -</h2>
+    <canvas id="canvas"></canvas>
+    <p>*you cannot draw on the canvas. it is for demonstration purposes only.</p>
   </body>
 </html>
