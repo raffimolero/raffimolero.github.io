@@ -43,7 +43,7 @@ function newProblem() {
     ? randInt(0, 1) * 2 - 1
     : null;
 
-  let msg = `${distance}km, ${angle}°`;
+  let msg = `${distance}km, ${angle} degrees`;
   if (secondary) {
     let p = DIRECTIONS[primary - 1];
     let s = DIRECTIONS[(primary + secondary + 3) % 4];
