@@ -1,0 +1,3 @@
+[submodule "margolus-js"]
+	path = margolus-js
+	url = https://github.com/raffimolero/margolus-js
