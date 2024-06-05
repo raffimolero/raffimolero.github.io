@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+body {
+  background-color: #132;
+}
+
+canvas {
+  background-color: #243;
+}
+
+</style>
+</head>
+<body>
+  <canvas id='canvas' />
+  <script>
+
+// ---------------------------------------
+// SECTION: framework
+
+const canvas = document.getElementById('canvas');
+canvas.style.width = canvas.width = 800;
+canvas.style.height = canvas.height = 600;
+const ctx = canvas.getContext('2d');
+
+const TAU = 2 * Math.PI;
+const TICK_MS = 20;
+
+function circle(x, y, r, style) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, TAU);
+  ctx.fillStyle = style;
+  ctx.fill();
+}
+
+function rect(x, y, w, h, style) {
+  ctx.beginPath();
+  ctx.rect(x, y, w, h)
+  ctx.fillStyle = style;
+  ctx.fill();
+}
+
+// ---------------------------------------
+// SECTION: objects
+
+/*
+  objects have:
+  color
+  x, y
+  vx, vy
+  w, h
+  bounce
+  speed
+  grounded
+  jump, jumps, maxJumps
+*/
+
+const box = {
+  color: '#abc',
+  x: 0, y: 0,
+  vx: 5, vy: 5,
+  w: 40, h: 60,
+  bounce: 0.75,
+  speed: 0.5,
+  jump: 16.0, jumps: 1, maxJumps: 5,
+}
+
+const objects = [
+  box
+];
+
+// TODO: one-way wall mechanics
+const walls = [
+  [], // u
+  [], // d
+  [], // l
+  [], // r
+];
+
+/// x,y specifies the upper left corner of the wall
+/// dir ('u', 'd', 'l', 'r') is the direction the wall allows
+/// len specifies how long the wall is in the perpendicular direction
+/// just read the code
+function newWall(x, y, dir, len) {
+  switch (dir) {
+    case 'u':
+      walls[0].push([x, y, x + len]);
+      break;
+    case 'd':
+      walls[1].push([x, y, x + len]);
+      break;
+    case 'l':
+      walls[2].push([x, y, y + len]);
+      break;
+    case 'r':
+      walls[3].push([x, y, y + len]);
+      break;
+  }
+}
+
+newWall(0, canvas.height / 2, 'u', canvas.width);
+newWall(0, canvas.height / 2 + 20, 'u', canvas.width);
+newWall(0, 0, 'd', canvas.width);
+newWall(canvas.width, 0, 'l', canvas.height);
+newWall(0, 0, 'r', canvas.height);
+
+// ---------------------------------------
+// SECTION: motion
+
+function wallCheck(obj) {
+  if (obj.vx < 0) {
+    for (const [x, y, y2] of walls[3]) {
+      if (
+        obj.x < x  && obj.x + obj.w > x &&
+        obj.y < y2 && obj.y + obj.h > y
+      ) {
+        obj.vx *= -obj.bounce;
+        obj.x += obj.vx * 2;
+        break;
+      }
+    }
+  } else if (obj.vx > 0) {
+    for (const [x, y, y2] of walls[2]) {
+      if (
+        obj.x < x  && obj.x + obj.w > x &&
+        obj.y < y2 && obj.y + obj.h > y
+      ) {
+        obj.vx *= -obj.bounce;
+        obj.x += obj.vx * 2;
+        break;
+      }
+    }
+  }
+
+  if (obj.vy < 0) {
+    for (const [x, y, x2] of walls[1]) {
+      if (
+        obj.x < x2 && obj.x + obj.w > x &&
+        obj.y < y  && obj.y + obj.h > y
+      ) {
+        obj.vy *= -obj.bounce;
+        obj.y += obj.vy * 2;
+        break;
+      }
+    }
+  } else if (obj.vy > 0) {
+    for (const [x, y, x2] of walls[0]) {
+      if (
+        obj.x < x2 && obj.x + obj.w > x &&
+        obj.y < y  && obj.y + obj.h > y
+      ) {
+        if (obj.maxJumps) {
+          obj.jumps = obj.maxJumps;
+        }
+        if (obj === player && held.has('s')) {
+          obj.vy = 0;
+        } else {
+          obj.vy *= -obj.bounce;
+        }
+        
+        obj.y += obj.vy * 2;
+        
+        break;
+      }
+    }
+  }
+  if (obj.y < 0 || obj.y + obj.h > canvas.height) {
+  }
+}
+
+function move(obj) {
+  obj.x += obj.vx;
+  obj.y += obj.vy;
+  wallCheck(obj);
+}
+
+const DRAG = 1 - 1 / (1 << 6); // dragon deez
+const GRAVITY = 0.0400 * TICK_MS;
+function accelerate(obj) {
+  obj.vx *= DRAG;
+  obj.vy *= DRAG;
+  obj.vy += GRAVITY;
+}
+
+// ---------------------------------------
+// SECTION: player control and input handling
+
+const player = box;
+
+const held = new Set();
+document.onkeydown = e => {
+  // catch key repeats
+  if (held.has(e.key)) return;
+  held.add(e.key);
+
+  if (e.key == 'w' && player.jumps > 0) {
+    player.jumps--;
+    player.vy = -player.jump;
+  }
+}
+
+document.onkeyup = e => {
+  held.delete(e.key);
+}
+
+function handleInput() {
+  if (held.has('d')) player.vx += player.speed;
+  if (held.has('a')) player.vx -= player.speed;
+}
+
+function tick() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  rect(box.x, box.y, box.w, box.h, box.color);
+
+  handleInput(player);
+
+  for (let i = 0; i < objects.length; i++) {
+    const obj = objects[i];
+    accelerate(obj);
+    move(obj);
+  }
+}
+
+const timer = setInterval(tick, TICK_MS);
+
+  </script>
+</body>
+</html>

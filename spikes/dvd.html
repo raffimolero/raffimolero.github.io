@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+body {
+  background-color: #132;
+}
+
+canvas {
+  background-color: #243;
+}
+
+</style>
+</head>
+<body>
+  <canvas id='canvas' />
+  <script>
+
+const canvas = document.getElementById('canvas');
+canvas.style.width = canvas.width = 800;
+canvas.style.height = canvas.height = 607;
+const ctx = canvas.getContext('2d');
+
+const TAU = 2 * Math.PI;
+
+function circle(x, y, r, style) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, TAU);
+  ctx.fillStyle = style;
+  ctx.fill();
+}
+
+function rect(x, y, w, h, style) {
+  ctx.beginPath();
+  ctx.rect(x, y, w, h)
+  ctx.fillStyle = style;
+  ctx.fill();
+}
+
+const box = {
+  color: '#abc',
+  x: 0, y: 0,
+  vx: 5, vy: 5,
+  w: 120, h: 80,
+}
+
+let dragon = null; // dragon deez nu
+document.onmousedown = e => {
+  dragon = [e.clientX, e.clientY];
+};
+
+document.onmouseup = e => {
+  dragon = null;
+};
+
+document.onmousemove = e => {
+  if (!dragon) return;
+  
+  const dx = e.clientX - dragon[0];
+  const dy = e.clientY - dragon[1];
+  box.x += dx;
+  box.y += dy;
+
+  if (box.x < 0) box.x = 0;
+  if (box.x + box.w > canvas.width) box.x = canvas.width - box.w;
+  if (box.y < 0) box.y = 0;
+  if (box.y + box.h > canvas.height) box.y = canvas.height - box.h;
+
+  dragon = [e.clientX, e.clientY];
+}
+
+const held = new Set();
+document.onkeydown = e => {
+  held.add(e.key);
+  console.log(held);
+}
+
+document.onkeyup = e => {
+  held.delete(e.key);
+  console.log(held);
+}
+
+function tick() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  rect(box.x, box.y, box.w, box.h, box.color);
+
+  if (!dragon) {
+    box.x += box.vx;
+    box.y += box.vy;
+  }
+
+  if (box.x < 0 || box.x + box.w > canvas.width) {
+    box.vx *= -1;
+    box.x += box.vx * 2;
+  }
+
+  if (box.y < 0 || box.y + box.h > canvas.height) {
+    box.vy *= -1;
+    box.y += box.vy * 2;
+  }
+}
+
+const timer = setInterval(tick, 20);
+
+  </script>
+</body>
+</html>

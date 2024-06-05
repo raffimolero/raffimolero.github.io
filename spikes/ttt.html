@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Comfortaa' rel='stylesheet'>
+  <style>
+
+    body {
+      background-color: #234;
+    }
+
+    td {
+      height: 120px;
+      width: 120px;
+      background-color: #456;
+      color: #fff;
+      font-family: 'Comfortaa';
+      font-size: 100px;
+
+      border: solid 5px #abc;
+      border-radius: 10px;
+    }
+
+    .clickable {
+      cursor: pointer;
+    }
+
+    .clickable:hover {
+      border-color: #bcd;
+      background-color: #678;
+    }
+
+    .clickable:active {
+      border-color: #cde;
+      background-color: #345;
+    }
+
+  </style>
+</head>
+<body>
+  <button onclick='reset()'>Reset</button>
+  <script>
+
+let turn;
+
+function gameState(x, y) {
+  for (let y = 0;; y++) {
+    if (table.children[y].children[x].innerHTML !== turn) break;
+    if (y >= 2) return true;
+  }
+
+  for (let x = 0;; x++) {
+    if (table.children[y].children[x].innerHTML !== turn) break;
+    if (x >= 2) return true;
+  }
+
+  for (let i = 0;; i++) {
+    if (table.children[i].children[i].innerHTML !== turn) break;
+    if (i >= 2) return true;
+  }
+  
+  for (let i = 0;; i++) {
+    if (table.children[i].children[2 - i].innerHTML !== turn) break;
+    if (i >= 2) return true;
+  }
+
+  for (const row of table.children) {
+    for (const tile of row.children) {
+      if (tile.innerHTML === '') {
+        return false;
+      }
+    }
+  }
+  return null;
+}
+
+function update(x, y) {
+  const state = gameState(x, y);
+  if (state === false) {
+    turn = turn === 'X' ? 'O' : 'X';
+  } else if (state === true) {
+    alert(`${turn} wins!`);
+    for (const row of table.children) {
+      for (const tile of row.children) {
+        tile.onclick = undefined;
+      }
+    }
+  } else {
+    alert('Draw! Resetting game...');
+    reset();
+  }
+}
+
+const table = document.createElement('table');
+document.body.appendChild(table);
+for (let y = 0; y < 3; y++) {
+  const row = document.createElement('tr');
+  table.appendChild(row);
+  for (let x = 0; x < 3; x++) {
+    const tile = document.createElement('td');
+    row.appendChild(tile);
+  }
+}
+
+function reset() {
+  turn = 'X';
+  for (let y = 0; y < 3; y++) {
+    const row = table.children[y];
+    for (let x = 0; x < 3; x++) {
+      const tile = row.children[x];
+      tile.innerHTML = '';
+      tile.className = 'clickable';
+      tile.onclick = () => {
+        if (tile.innerHTML) return;
+        tile.innerHTML = turn;
+        tile.className = '';
+        tile.onclick = undefined;
+        update(x, y);
+      };
+    }
+  }
+}
+reset();
+
+  </script>
+</body>
+</html>
+

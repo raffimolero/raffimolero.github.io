@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+* {
+  font-family: "Courier New";
+  color: #fff;
+}
+
+body {
+  background-color: #333;
+  padding: 5px 30px;
+}
+
+table {
+  border: 5px inset #555;
+
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  max-width:100%;
+  max-height:100%;
+  overflow:auto;
+}
+
+input, button {
+  color: #000;
+}
+
+button {
+  cursor: pointer;
+}
+
+input {
+  width: 60px;
+  margin-right: 5px;
+}
+
+input:invalid {
+  border: solid 4px red;
+}
+
+td {
+  text-align: center;
+  width: 26px;
+  height: 26px;
+  border-width: 4px;
+  /* no drag */
+  user-drag: none;
+  -webkit-user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+#controls {
+  margin-top: 50vh;
+}
+
+.hide {
+  background-color: #999;
+  border-color: #999;
+  border-style: outset;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.hide.clickable:hover:not(:active), .hide.focus:not(.down) {
+  width: 30px;
+  height: 30px;
+  border-width: 2px;
+  background-color: #ba9;
+  border-color: #ba9;
+}
+
+.hide.clickable:hover:active, .hide.focus.down {
+  border-style: inset;
+  background-color: #876;
+  border-color: #876;
+}
+
+.show {
+  background-color: #aaa;
+  border-color: #aaa;
+  border-style: inset;
+  width: 30px;
+  height: 30px;
+  border-width: 2px;
+}
+
+.show.clickable:hover, .show.focus {
+  background-color: #a98;
+  border-color: #a98;
+}
+
+.show.clickable:hover:active, .show.focus.down {
+  background-color: #987;
+  border-color: #987;
+  border-width: 4px;
+  width: 26px;
+  height: 26px;
+  font-size: 20px;
+}
+
+.number {
+  font-weight: 900;
+  font-size: 25px;
+}
+
+.bomb {
+  background-color: #ba9;
+  border-color: #ba9;
+}
+
+.boom, .hide.clickable.boom:hover, .hide.clickable.boom.focus {
+  background-color: #f88;
+  border-color: #f00;
+}
+
+.defused, .hide.clickable.defused:hover, .hide.clickable.defused.focus {
+  background-color: #8f8;
+  border-color: #0f0;
+}
+
+</style>
+</head>
+<body>
+  <p>Best Time resets when you start a new game with different settings.</p>
+  <input id="width" type="number" value="24" placeholder="10"><label>Width</label>
+  <br>
+  <input id="height" type="number" value="16" placeholder="10"><label>Height</label>
+  <br>
+  <input id="mines" type="number" value="48" placeholder="10"><label>Mines</label>
+  <br>
+  <button onclick='reset()'>New Game</button>
+  <h1 id='timer' />
+  <h1 id='best'>Best: --:--</h1>
+  <br>
+  <h1 id='controls'>Controls:</h1>
+  <ul>
+    <li>WASD/HJKL/Arrow keys/Mouse to move</li>
+    <li>LeftClick/Space on a hidden tile to reveal</li>
+    <li>RightClick/F on a hidden tile to flag/unflag</li>
+    <li>LeftClick/RightClick/Space/F on a number to reveal surrounding tiles, if the number of flags around it match</li>
+  </ul>
+  <table id='grid'></table>
+<script>
+
+function dbg(x) {
+  console.log(x);
+  return x;
+}
+
+const flagged = '🚩';
+// const trueBomb = '🏴';
+const trueBomb = flagged;
+const falseBomb = '🏳';
+const bomb = '💣';
+const boom = '💥';
+
+let w = 0;
+let h = 0;
+let mines = 0;
+let spaces;
+let alive;
+let firstClick;
+let cursor;
+let time = null;
+let timer;
+let best = null;
+/*
+extra tile data:
+value
+revealed
+flagged
+innerHTML
+className
+onclick
+oncontextmenu
+*/
+
+const table = document.getElementById('grid');
+table.oncontextmenu = e => e.preventDefault();
+
+function get(id) {
+  const el = document.getElementById(id);
+  return el.value === '' ? el.placeholder : el.value;
+}
+
+function enforceMinMax(el) {
+  if (el.value === "") return; 
+  const min = parseInt(el.min);
+  const max = el.max === "depends" ? get('width') * get('height') - 9 : parseInt(el.max);
+  el.value = Math.max(Math.min(el.value, max), min);
+}
+
+function formatTime(time) {
+  if (time === null) return '--:--';
+  let secs = time;
+  let mins = Math.floor(secs / 60);
+  secs %= 60;
+  return `${mins}:${secs.toString().padStart(2,'0')}`;
+}
+
+const timerLabel = document.getElementById('timer');
+const bestLabel = document.getElementById('best');
+function updateTimer() {
+  timerLabel.innerHTML = `Time: ${formatTime(time)}`;
+}
+
+function tick() {
+  time++;
+  updateTimer();
+}
+
+function reset() {
+  time = 0;
+  updateTimer();
+  clearInterval(timer);
+  timer = setInterval(tick, 1000);
+  table.innerHTML = '';
+  const [ow, oh, om] = [w, h, mines];
+  [w, h, mines] = [get('width'), get('height'), get('mines')];
+  if (w !== ow || h !== oh || mines !== om) {
+    best = null;
+    updateBest();
+  }
+
+  cursor = [Math.floor(w / 2), Math.floor(h / 2)];
+
+  spaces = w*h - mines;
+  alive = true;
+  firstClick = true;
+  
+  for (let y = 0; y < h; y++) {
+    const row = document.createElement('tr');
+    table.appendChild(row);
+    for (let x = 0; x < w; x++) {
+      const tile = document.createElement('td');
+      row.appendChild(tile);
+      tile.value = 0;
+      tile.revealed = false;
+      tile.flagged = false;
+      tile.innerHTML = '';
+      tile.className = 'clickable hide';
+      tile.onclick = e => lmb(tile, x, y);
+      tile.oncontextmenu = e => rmb(tile, x, y);
+    }
+  }
+}
+
+function end() {
+  alive = false;
+  clearInterval(timer);
+}
+
+function updateBest() {
+  bestLabel.innerHTML = `Best: ${formatTime(best)}`;
+}
+
+function win() {
+  end();
+  if (best) best = Math.min(best, time);
+  else best = time;
+  updateBest();
+  
+  for (let y = 0; y < h; y++) {
+    let row = table.children[y];
+    for (let x = 0; x < w; x++) {
+      let tile = row.children[x];
+      tile.onclick = undefined;
+      if (tile.value == -1) {
+        if (!tile.flagged) {
+          tile.innerHTML = bomb;
+          tile.classList.add('emoji');
+        }
+        tile.classList.add('defused');
+      }
+    }
+  }
+}
+
+function detonate(tile) {
+  tile.classList.add('boom');
+  tile.classList.add('emoji');
+  tile.innerHTML = boom;
+}
+
+function lose() {
+  end();
+  for (let y = 0; y < h; y++) {
+    let row = table.children[y];
+    for (let x = 0; x < w; x++) {
+      let tile = row.children[x];
+      const isBomb = tile.value == -1;
+      if (isBomb || tile.flagged) {
+        if (isBomb) tile.classList.add('bomb');
+        if (tile.classList.contains('boom')) continue;
+        tile.innerHTML = tile.flagged
+          ? isBomb ? trueBomb : falseBomb
+          : isBomb ? bomb : alert('error');
+      } else {
+        tile.classList.remove('clickable')
+      };
+    }
+  }
+}
+
+const setCol = (p, col) => style(table.children[p[1]].children[p[0]], col);
+
+const at = (x, y) => table.children[y].children[x];
+
+const rand = n => Math.floor(Math.random() * n);
+
+function show(tile) {
+  tile.revealed = true;
+  const isBomb = tile.value == -1;
+  tile.className = `show ${isBomb ? 'emoji' : 'number'}${tile.value > 0 ? ' clickable' : ''}`;
+  tile.innerHTML = tile.value == 0 ? '' : tile.value;
+  tile.style.color = [undefined, '#008', '#080', '#800', '#004', '#400', '#044', '#000', '#444'][tile.value];
+  return isBomb;
+}
+
+const posHash = pos => pos[1]*w + pos[0];
+
+function surround(x, y, queue, done) {
+  for (let yy = Math.max(y-1, 0); yy <= Math.min(y+1, h-1); yy++) {
+    for (let xx = Math.max(x-1, 0); xx <= Math.min(x+1, w-1); xx++) {
+      const pos = [xx, yy];
+      const hash = posHash(pos);
+      if (done.has(hash)) continue;
+      done.add(hash);
+      queue.push(pos);
+    }
+  }
+}
+
+function chainReveal(queue, done) {
+  let loss = false;
+  while (true) {
+    const pos = queue.pop();
+    if (!pos) {
+      if (loss) lose();
+      return;
+    }
+    const [x, y] = pos;
+    const tile = at(x, y);
+
+    if (tile.revealed) continue;
+    if (tile.flagged) continue;
+    if (show(tile)) {
+      detonate(tile);
+      loss = true;
+      continue;
+    }
+    
+    if (--spaces <= 0) win();
+    if (tile.value == 0) surround(x, y, queue, done);
+  }
+}
+
+function reveal(x, y) {
+  chainReveal([[x, y]], new Set());
+}
+
+const flag = tile => {
+  tile.flagged ^= true;
+  if (tile.flagged) {
+    tile.innerHTML = flagged;
+  } else {
+    tile.innerHTML = '';
+  }
+};
+
+function trySurround(tile, x, y) {
+  const queue = [];
+    const done = new Set();
+    let count = tile.value;
+    if (count == -1) alert('error');
+
+    for (let yy = Math.max(y-1, 0); yy <= Math.min(y+1, h-1); yy++) {
+      for (let xx = Math.max(x-1, 0); xx <= Math.min(x+1, w-1); xx++) {
+        const pos = [xx, yy];
+        if (at(xx, yy).flagged) count--;
+      }
+    }
+    
+    if (count != 0) return;
+    surround(x, y, queue, done);
+    chainReveal(queue, done);
+}
+
+function focus() {
+  const [x, y] = cursor;
+  at(x, y).classList.add('focus');
+}
+
+function unfocus() {
+  const [x, y] = cursor;
+  const tile = at(x, y);
+  tile.classList.remove('down');
+  tile.classList.remove('focus');
+}
+
+const lmb = (tile, x, y) => {
+  unfocus();
+  cursor = [x, y];
+  if (!alive || tile.flagged) return;
+  
+  if (tile.revealed) {
+    trySurround(tile, x, y);
+  } else {
+    if (firstClick) {
+      firstClick = false;
+      generate(x, y);
+    }
+    reveal(x, y)
+  }
+};
+
+const rmb = (tile, x, y) => {
+  unfocus();
+  cursor = [x, y];
+  if (!alive) return;
+  if (tile.revealed) trySurround(tile, x, y);
+  else flag(tile);
+}
+
+document.onkeydown = e => {
+  let caught = true;
+  unfocus();
+  switch (e.key) {
+    case 'ArrowLeft':
+    case 'h':
+    case 'a': {
+      cursor[0] = Math.max(cursor[0] - 1, 0);
+      break;
+    }
+    case 'ArrowRight':
+    case 'l':
+    case 'd': {
+      cursor[0] = Math.min(cursor[0] + 1, w - 1);
+      break;
+    }
+    case 'ArrowUp':
+    case 'k':
+    case 'w': {
+      cursor[1] = Math.max(cursor[1] - 1, 0);
+      break;
+    }
+    case 'ArrowDown':
+    case 'j':
+    case 's': {
+      cursor[1] = Math.min(cursor[1] + 1, h - 1);
+      break;
+    }
+    case 'f': {
+      const [x, y] = cursor;
+      rmb(at(x, y), x, y);
+      break;
+    }
+    case ' ': {
+      const [x, y] = cursor;
+      at(x, y).classList.add('down');
+      break;
+    }
+    case 'r': {
+      reset();
+      break;
+    }
+    default: {
+      caught = false;
+    }
+  }
+  if (caught) {
+    e.preventDefault();
+  }
+  focus();
+};
+
+document.onkeyup = e => {
+  if (e.key == ' ') {
+    const [x, y] = cursor;
+    at(x, y).classList.remove('down');
+    lmb(at(x, y), x, y);
+    focus();
+  }
+};
+
+document.onmousemove = e => unfocus();
+
+function generate(mx, my) {
+  const edges = (mx == 0 || mx == w-1) + (my == 0 || my == h-1);
+  let spacesLeft = w * h - [9, 6, 4][edges];
+  let minesLeft = Math.min(mines, spacesLeft);
+
+  for (let y = 0; y < h; y++) {
+    let row = table.children[y];
+    for (let x = 0; x < w; x++) {
+      let tile = row.children[x];
+      tile.value = 0;
+    }
+  }
+
+  for (let y = 0; y < h; y++) {
+    let row = table.children[y];
+    for (let x = 0; x < w; x++) {
+      let tile = row.children[x];
+      const inY = y - 1 <= my && my <= y + 1;
+      const inX = x - 1 <= mx && mx <= x + 1;
+      const inXY = inX && inY;
+
+      if (!inXY && rand(spacesLeft--) < minesLeft) {
+        minesLeft--;
+        tile.value = -1;
+        for (let yy = y-1; yy <= y+1; yy++) {
+          let row = table.children[yy];
+          if (!row) continue;
+          for (let xx = x-1; xx <= x+1; xx++) {
+            let tile = row.children[xx];
+            if (!tile) continue;
+            if (tile.value != -1) tile.value++;
+          }
+        }
+      }
+    }
+  }
+}
+
+reset()
+
+</script>
+</body>
+</html>

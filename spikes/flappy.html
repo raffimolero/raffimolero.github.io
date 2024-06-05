@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+
+
+
+</style>
+</head>
+<body>
+  <canvas id="canvas" />
+
+<script>
+
+const canvas = document.getElementById('canvas');
+canvas.style.width = canvas.width = 600;
+canvas.style.height = canvas.height = 400;
+canvas.style.backgroundColor = '#0ff';
+const ctx = canvas.getContext('2d');
+
+const TAU = 2 * Math.PI;
+
+function circle(x, y, r, style) {
+  ctx.beginPath();
+  ctx.arc(x, y, r, 0, TAU);
+  ctx.fillStyle = style;
+  ctx.fill();
+}
+
+function rect(x, y, w, h, style) {
+  ctx.beginPath();
+  ctx.rect(x, y, w, h)
+  ctx.fillStyle = style;
+  ctx.fill();
+}
+
+const bird = {
+  sprite: 'https://w7.pngwing.com/pngs/146/431/png-transparent-flappy-bird-blue-xbox-360-flappy-bird-thumbnail.png',
+  color: '#ff0',
+  x: canvas.width / 4 - 20, y: canvas.height - 30,
+  vx: undefined, vy: 0,
+  w: 40, h: 30,
+
+  flap: -15,
+}
+
+// TODO: pipes
+
+document.onkeydown = e => {
+  if (dead) {
+    
+  } else {
+    
+  }
+
+  console.log(bird.vy);
+  bird.vy = bird.flap;
+  console.log(bird.vy);
+};
+
+const pipes = [];
+
+const GRAVITY = 1;
+let dead = true;
+function tick() {
+  console.log('tick');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  rect(bird.x, bird.y, bird.w, bird.h, bird.color);
+
+  bird.y += bird.vy;
+  bird.vy += GRAVITY;
+
+  if (bird.y + bird.h >= canvas.height) {
+    bird.vy = 0;
+    bird.y = canvas.height - bird.h;
+    dead = true;
+  }
+}
+
+const timer = setInterval(tick, 20);
+
+</script>
+</body>
+</html>

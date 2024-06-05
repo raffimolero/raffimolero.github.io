@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head><style>
+* {
+  color: white;
+  font-family: "Courier New";
+}
+
+td {
+  width: 30px;
+  height: 30px;
+}
+</style></head>
+<body><script>
+
+
+let w = 24;
+let h = 16;
+
+function setCol(p, col) {
+  table.children[p[1]].children[p[0]].style.backgroundColor = col;
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    let j = rand(i + 1);
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function splash(messages, refIdx) {
+  refIdx[0]++;
+  if (refIdx[0] >= messages.length) {
+    refIdx[0] = 0;
+    shuffle(messages);
+  }
+  return messages[refIdx[0]];
+}
+
+document.body.style.backgroundColor = '#312';
+const bg = '#534';
+const foodCols = ['#f88', '#f8a', '#f8f', '#a8f', '#88f', '#a8f', '#f8f', '#f8a'];
+const foodPop = '#fff';
+let foodCol = 0;
+const segCols = ['#f88', '#f8a', '#f8f', '#a8f', '#88f', '#a8f', '#f8f', '#f8a'];
+
+const table = document.createElement('table');
+document.body.appendChild(table);
+for (let y = 0; y < h; y++) {
+  const row = document.createElement('tr');
+  table.appendChild(row);
+  for (let x = 0; x < w; x++) {
+    const tile = document.createElement('td');
+    tile.style.backgroundColor = bg;
+    row.appendChild(tile);
+  }
+}
+
+const message = document.createElement('h1');
+document.body.appendChild(message);
+
+const highScoreText = document.createElement('h3');
+document.body.appendChild(highScoreText);
+
+const splashText = document.createElement('p');
+
+const timeText = document.createElement('p');
+
+
+const longnesses = [
+  'Longth',
+  'The quality of being long',
+  "Shortn'tness",
+  'Unshortness',
+  'Width in the forward direction',
+  'Frontal height',
+  'Snekness',
+  'Squiggliness',
+  'Steps closer to death',
+  'Number of obstacles',
+  'Segments',
+  'Pieces',
+  'Size',
+  'Friction level',
+  'Pixels',
+  'Opportunities to rethink life',
+  'Stolen gems',
+  'Money',
+  'HP: 1, Chances of death',
+  'level',
+];
+let lenIdx = [longnesses.length];
+
+function updateLength(length) {
+  let msg = Math.random() < 0.75 ? 'Length' : splash(longnesses, lenIdx);
+  message.innerHTML = `${msg}: ${length}`;
+}
+
+const deathMessages = [
+  'you died. again. how surprising.',
+  'pls stop',
+  'just quit at this point',
+  'you are the die',
+  'stop dying',
+  'L',
+  'git gud',
+  'cringe',
+  'very professional',
+  'gaming',
+  '😐', // stare
+  '下手くそすぎる🙄', // heta kuso sugiru eye roll
+  '👏👏👏👏👏', // clap
+  'wow ok',
+  'nope',
+  'whoops',
+  'dang',
+  'oof',
+  "that's rough buddy",
+  "just don't hit yourself or the walls is it that hard",
+  'why did you do that',
+  'have you considered not dying',
+  'i think you needed to turn at some point',
+  'PSA: avoid self, avoid walls',
+  'use wasd to move',
+  'i diagnose you with die',
+  'oh, im die, thank you foeva',
+  'This is so sad, Alexa play despacito',
+  'oopsie daisy you really sucky wucky',
+];
+let deathIdx = [deathMessages.length];
+
+const highScores = [
+  'Longest boi',
+  'High score',
+  'Biggest ever',
+  'Proudest moment',
+  'Most stressful game',
+  'Squiggliest Snek',
+  'Largest chonker',
+  'Hugest mammoth',
+  'The fruits of your wasted time',
+  'Most colorful rainbow',
+];
+let highScore = 0;
+let scoreIdx = [highScores.length];
+
+const pieceNames = [
+  'Pieces',
+  'Segments',
+  'Pixels',
+  'Bloccs',
+  'Chonks',
+  'Squares',
+  'Tiles',
+  'Rainbows',
+];
+let pieceIdx = [pieceNames.length];
+
+const measurements = [
+  'long',
+  'in length',
+  'in size',
+  'in mass',
+  'big',
+  'large',
+  'to slither with',
+  'as measured by the national snek length inspectors',
+  'moving at once',
+];
+let measureIdx = [measurements.length];
+
+const splashes = [
+  'wasd',
+  'asdf',
+  'i spent way too much time on this',
+  'why did i do this',
+  "thanks for playing my game, even though i didn't really come up with the idea",
+  'what is “sesame oil”? - unname66609 [sic]',
+  'mosqit 👎',
+  'helix is a great code editor',
+  "rust is a great language, but javascript is everywhere so yeah that's what we're stuck with",
+  'snake is fun sometimes',
+  'i like cats',
+  'i used to have cats. unfortunately, one day, i took an arrow to the knee.',
+  "temperature is fine so long as humidity isn't involved",
+  'made by Raffi aka Redstoneboi#9534 on discord',
+  'words',
+  'pretend you see a different splash message here',
+  'you spin me right round baby right round',
+  'a',
+  'aaaaaa',
+  'sui-chan waaa, kyou mo kawaiii~!',
+  'glasses are really versatile',
+  'do you ever just spin a 4-long snake into a square by spamming wasdwasdwasdwasd? i specifically made it easy to do that',
+  'the fog is coming',
+  'the mitochondria is the powerhouse of the cell',
+  'bite me',
+];
+let splashIdx = [splashes.length];
+
+document.body.appendChild(splashText);
+let splasher = setInterval(() => {
+  splashText.innerHTML = splash(splashes, splashIdx);
+}, 10000);
+
+const rand = n => Math.floor(Math.random() * n);
+const pEq = (a, b) => a[0] === b[0] && a[1] === b[1];
+
+let segs;
+let food;
+let dir = 0;
+let queue = [];
+
+let lastPressed = null
+document.onkeydown = e => {
+  if (lastPressed === e.key) return;
+  lastPressed = e.key;
+  if (e.key === 'd' || e.key === 'ArrowRight') queue.splice(0, 0, 0);
+  if (e.key === 's' || e.key === 'ArrowDown') queue.splice(0, 0, 1);
+  if (e.key === 'a' || e.key === 'ArrowLeft') queue.splice(0, 0, 2);
+  if (e.key === 'w' || e.key === 'ArrowUp') queue.splice(0, 0, 3);
+};
+document.onkeyup = e => lastPressed = null;
+
+function newFood() {
+  let invalid = true;
+  while (invalid) {
+    invalid = false;
+    food = [rand(w), rand(h)];
+    for (let seg of segs) {
+      if (pEq(seg, food)) {
+        invalid = true;
+        break;
+      }
+    }
+  }
+  setCol(food, foodPop);
+}
+
+function reset() {
+  for (let y = 0; y < h; y++) {
+    let row = table.children[y];
+    for (let x = 0; x < w; x++) {
+      let tile = row.children[x];
+      tile.style.backgroundColor = bg;
+    }
+  }
+  segs = [[0, 0], [0, 0], [0, 0]];
+  newFood();
+  queue = [];
+  dir = 0;
+  updateLength(3);
+}
+
+function die(trueLength) {
+  if (trueLength > highScore) {
+    highScore = trueLength;
+    let moment = splash(highScores, scoreIdx);
+    let piece = splash(pieceNames, pieceIdx);
+    let measure = splash(measurements, measureIdx);
+    highScoreText.innerHTML = `${moment}: ${trueLength} ${piece} ${measure}`;
+  }
+  reset();
+  message.innerHTML = splash(deathMessages, deathIdx);
+}
+
+function tick() {
+  // clone head
+  let head = [segs[0][0], segs[0][1]];
+  
+  // move head
+  let curDir = queue.pop();
+  if (curDir !== undefined && (curDir + 2) % 4 !== dir) dir = curDir;
+  switch (dir) {
+    case 0: head[0]++; break;
+    case 1: head[1]++; break;
+    case 2: head[0]--; break;
+    case 3: head[1]--; break;
+  }
+
+  // check wall bonk
+  if (head[0] < 0 || head[0] >= w || head[1] < 0 || head[1] >= h) {
+    return die(segs.length);
+  }
+  
+  foodCol++;
+  foodCol %= foodCols.length;
+  setCol(food, foodCols[foodCol]);
+  
+  // check eat
+  if (pEq(head, food)) {
+    newFood();
+    updateLength(segs.length + 1);
+  } else {
+    setCol(segs.pop(), bg);
+  }
+  
+  // check self bonk
+  for (let seg of segs) {
+    if (pEq(head, seg)) {
+      return die(segs.length + 1);
+    }
+  }
+
+  segs.splice(0, 0, head);
+
+  // color snek
+  segs.forEach((seg, i) => setCol(seg, segCols[i % segCols.length]));
+}
+
+reset();
+let timer = setInterval(tick, 100);
+
+</script></body>
+</html>
+<!-- 8 minutes + timer -->
