@@ -8,6 +8,7 @@
 </head>
 <body>
     <h1>New Year Timestamps!</h1>
+    <label for="in_msg">Input here:</label>
     <textarea
         id="in_msg"
         name="input_box"
@@ -27,11 +28,13 @@ song Awake https://youtu.be/UYEZL13MUFk
 event drop 1:01
 </textarea>
     <br>
+    <label for="out_msg">Output here:</label>
     <textarea
         id="out_msg"
         name="output_box"
         rows="12"
         cols="80"
+        readonly
     ></textarea>
     <br>
     <div id="out_html"></div>
