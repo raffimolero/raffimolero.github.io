@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Year Timestamps</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>New Year Timestamps!</h1>
+    <textarea
+        id="in_msg"
+        name="input_box"
+        onkeyup="update_output()"
+        rows="12"
+        cols="80"
+    >
+header 2024 "[insert link here]"
+
+song Bibbidiba https://youtu.be/8ZP5eqm4JqM
+event chorus 1:03
+
+song Moonlight https://youtu.be/UmN7Fr_Kf-8
+event chorus 0:24
+
+song Awake https://youtu.be/UYEZL13MUFk
+event drop 1:01
+</textarea>
+    <br>
+    <textarea
+        id="out_msg"
+        name="output_box"
+        rows="12"
+        cols="80"
+    ></textarea>
+    <br>
+    <div id="out_html"></div>
+    <script src="index.js"></script>
+</body>
+</html>
