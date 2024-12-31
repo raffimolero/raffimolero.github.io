@@ -1,3 +1,5 @@
+/// "We have react at home"
+
 function Time(h, m, s, frac) {
     const ds = Math.round(frac * 10);
     const frac_str = ds === 0 ? '' : `.${ds}`;
