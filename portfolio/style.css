@@ -21,7 +21,7 @@ body {
 .uhh {
   font-family: "Comic Sans MS";
   color: #0001;
-  margin: 1em 1em;
+  margin: 1em 0em;
   transition: 0.5s;
 }
 
@@ -31,11 +31,11 @@ body {
 }
 
 #cool {
-  font-size: 50;
+  font-size: 30;
 }
 
 #cool:hover {
-  font-size: 60;
+  font-size: 35;
 }
 
 #holodoku {
