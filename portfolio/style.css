@@ -1,7 +1,7 @@
 body {
-  background-color: #567;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  width: 100%;
+  background-color: #567;
+  padding: 4em;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -15,34 +15,33 @@ body {
   border: 1px;
   background-color: #def;
   border-radius: 30px;
-  border: 6px solid #333;
 }
 
 .uhh {
   font-family: "Comic Sans MS";
   color: #0001;
-  margin: 1em 0em;
+  margin: 0.25em;
   transition: 0.5s;
 }
 
 .uhh:hover {
   color: #0008;
-  margin: 0.5em 0em;
+  margin: 0.12em;
 }
 
-#cool {
+h1.uhh {
   font-size: 30;
 }
 
-#cool:hover {
+h1.uhh:hover {
   font-size: 35;
 }
 
-#holodoku {
+p.uhh {
   font-size: 20;
 }
 
-#holodoku:hover {
+p.uhh:hover {
   font-size: 22;
 }
 
@@ -86,10 +85,13 @@ ol li span {
 .hbox {
   display: flex;
   column-gap: 2em;
+  row-gap: 2em;
 }
 
 .vbox {
   flex: 1 1 0px;
+  column-gap: 2em;
+  row-gap: 2em;
 }
 
 .center {
@@ -108,6 +110,43 @@ figcaption {
 
 @media screen and (max-width: 1000px) {
   body {
+    padding: 0;
+  }
+
+  #main-container {
+    max-width: 100%;
+    padding: 1em 1em;
+  }
+
+  h1 {
+    font-size: 50;
+  }
+
+  .hbox {
+    flex-direction: column;
+  }
+
+  ol,
+  ul {
+    padding: 0.5em 2em;
+  }
+
+  ol li {
+    margin: 0;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  body {
     font-size: small;
+  }
+  h1 {
+    font-size: 40;
+  }
+  p.uhh {
+    font-size: 15;
+  }
+  p.uhh:hover {
+    font-size: 17;
   }
 }
