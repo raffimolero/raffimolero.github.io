@@ -7,7 +7,9 @@
   </head>
   <body>
     <div id="main-container">
-      <h1>Raffi Molero</h1>
+      <div>
+        <h1>Raffi Molero</h1>
+      </div>
       <hr />
       <div class="hbox">
         <div class="vbox center">
@@ -77,227 +79,237 @@
           </ul>
         </div>
       </div>
-      <h1><a href="https://github.com/raffimolero">My GitHub</a></h1>
-      <h3>Here's a list of decently cool projects:</h3>
-      <ul class="bordered">
-        <li>
-          <div>
-            <h2>
-              <a href="https://github.com/raffimolero/Exer1Spec"
-                >Really rough templating engine (PHP in Docker)</a
-              >
-            </h2>
-          </div>
-          <div class="hbox">
-            <div class="vbox">
-              <p>
-                An entire templating engine built as my first PHP project. It
-                was built for fun, and to make it easier to submit a school
-                project with... interesting submission limitations.
-              </p>
-              <p>It's very rough. To quote the readme:</p>
-              <div class="quote">
-                <p>
-                  This is a project designed to comply with some really weird
-                  specification set for a school project. Apparently we weren't
-                  allowed to use the latest PHP features and had to use PHP
-                  print statements to print out HTML, instead of just putting
-                  the PHP inside of the HTML like it was designed to do from the
-                  very moment it was created.
-                </p>
-                <p>
-                  So, out of sheer spite, I decided to create a very extremely
-                  rushed framework/build system that takes a file structure of
-                  .php files with templates and styles, and compiles them into a
-                  set of .html and .php files structured the same way as the
-                  folder structure inside of Exer1Spec/php/views/**.
-                </p>
-              </div>
+      <hr />
+      <div>
+        <h1><a href="https://github.com/raffimolero">My GitHub</a></h1>
+        <h3>Here's a list of decently cool projects:</h3>
+        <ul class="bordered">
+          <li>
+            <div>
+              <h2>
+                <a href="https://github.com/raffimolero/Exer1Spec"
+                  >Really rough templating engine (PHP in Docker)</a
+                >
+              </h2>
             </div>
-            <div class="vbox center">
-              <a href="assets/tropixotics.png" target="_blank">
-                <img
-                  src="assets/tropixotics.png"
-                  alt="screenshot of the front page of 'Tropixotics'"
-                />
-              </a>
-              <figcaption>
-                A screenshot of the front page of 'Tropixotics', a website
-                rendered with the PHP templating engine. It preserved the
-                header, footer, and style.css throughout every HTML
-                subdirectory.
-              </figcaption>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div>
-            <h2>
-              <a href="../index.html"
-                >Random stuff (HTML/CSS/JS on GitHub Pages)</a
-              >
-            </h2>
             <div class="hbox">
               <div class="vbox">
                 <p>
-                  Just some pure HTML/CSS/JS projects that I made while bored.
+                  An entire templating engine built as my first PHP project. It
+                  was built for fun, and to make it easier to submit a school
+                  project with... interesting submission limitations.
                 </p>
-                <p>
-                  They were built for chromium browsers, and unfortunately some
-                  don't work on firefox.
-                </p>
-                <p>
-                  It includes minesweeper, snake, a weird cellular automaton
-                  simulator, a bouncing rectangle, a dice game whose sprites
-                  have since disappeared, tic tac toe but your opponent is
-                  yourself, a tool to compute when you should play a song to hit
-                  the drop at exactly 12:00 AM on new year, and a thing that
-                  draws vector angles.
-                </p>
-                <p>I recommend Minesweeper and Snake. They're pretty fun.</p>
-                <p id="holodoku" class="uhh">We don't talk about holodoku.</p>
+                <p>It's very rough. To quote the readme:</p>
+                <div class="quote">
+                  <p>
+                    This is a project designed to comply with some really weird
+                    specification set for a school project. Apparently we
+                    weren't allowed to use the latest PHP features and had to
+                    use PHP print statements to print out HTML, instead of just
+                    putting the PHP inside of the HTML like it was designed to
+                    do from the very moment it was created.
+                  </p>
+                  <p>
+                    So, out of sheer spite, I decided to create a very extremely
+                    rushed framework/build system that takes a file structure of
+                    .php files with templates and styles, and compiles them into
+                    a set of .html and .php files structured the same way as the
+                    folder structure inside of Exer1Spec/php/views/**.
+                  </p>
+                </div>
               </div>
               <div class="vbox center">
-                <a href="assets/random html.png" target="_blank">
+                <a href="assets/tropixotics.png" target="_blank">
                   <img
-                    src="assets/random html.png"
-                    alt="a collage of screenshots from the various HTML programs"
+                    src="assets/tropixotics.png"
+                    alt="screenshot of the front page of 'Tropixotics'"
                   />
                 </a>
                 <figcaption>
-                  Collage of screenshots from the various HTML programs.<br />
-                  (Top left: Snake, Top Right: Margolus JS, Bottom Left:
-                  Minesweeper, Bottom Right: Vector Quantities, Rightmost: Tic
-                  Tac Toe)
+                  A screenshot of the front page of 'Tropixotics', a website
+                  rendered with the PHP templating engine. It preserved the
+                  header, footer, and style.css throughout every HTML
+                  subdirectory.
                 </figcaption>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div>
-            <h2>
-              SchedBuilder (React/TS on GitHub Pages) -
-              <a href="https://pordafeople.github.io/schedbuilder/">[page]</a>
-              -
-              <a href="https://github.com/pordafeople/schedbuilder"
-                >[repository]</a
-              >
-            </h2>
-            <div class="hbox">
-              <div class="vbox">
-                <p>
-                  Generates a pretty image of your schedule just from pasting in
-                  your AdDU SIS data!
-                </p>
-                <p>
-                  It parses the raw schedule data using regex, and uses React to
-                  build an HTML table fully styled and to-scale based on how
-                  long a class period is.
-                </p>
-                <p>
-                  Built with Vite, React, and TypeScript, set up with a workflow
-                  to automatically deploy on GitHub Pages when there is a push
-                  to the main branch. Don't worry, it can't store any data
-                  anywhere.
-                </p>
-              </div>
-              <div class="vbox center">
-                <a href="assets/Schedule.png" target="_blank">
-                  <img
-                    src="assets/Schedule.png"
-                    alt="Sample schedule generated by the program"
-                  />
-                </a>
-                <figcaption>
-                  Sample schedule generated by the program.<br />
-                  Image edited to include input on the right.
-                </figcaption>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div>
-            <h2>
-              <a href="https://github.com/raffimolero/kelasu"
-                >Discord Board game bot (Rust:poise on Discord)</a
-              >
-            </h2>
-            <div class="hbox">
-              <div class="vbox">
-                <p>
-                  This is a Discord bot that I wrote in Rust and used to run on
-                  my local machine that allows 2 players to play a board game.
-                </p>
-                <p>
-                  One player sends a command to host a new lobby, another player
-                  will join, and then both players choose a color (Red/Blue).
-                  Then the game will be played and displayed as text. It has
-                  buttons for players to make their move, and supports
-                  resigning.
-                </p>
-                <p>
-                  I've also made another Discord bot in Node.js, but I've since
-                  lost those files.
-                </p>
-              </div>
-              <div class="vbox center">
-                <a href="assets/kelasu.png" target="_blank">
-                  <img
-                    src="assets/kelasu.png"
-                    alt="Screenshot of an ongoing game"
-                  />
-                </a>
-                <figcaption>
-                  Screenshot of an ongoing game<br />
-                  legend has it the game is still ongoing
-                </figcaption>
+          </li>
+          <li>
+            <div>
+              <h2>
+                <a href="../index.html"
+                  >Random stuff (HTML/CSS/JS on GitHub Pages)</a
+                >
+              </h2>
+              <div class="hbox">
+                <div class="vbox">
+                  <p>
+                    Just some pure HTML/CSS/JS projects that I made while bored.
+                  </p>
+                  <p>
+                    They were built for chromium browsers, and unfortunately
+                    some don't work on firefox.
+                  </p>
+                  <p>
+                    It includes minesweeper, snake, a weird cellular automaton
+                    simulator, a bouncing rectangle, a dice game whose sprites
+                    have since disappeared, tic tac toe but your opponent is
+                    yourself, a tool to compute when you should play a song to
+                    hit the drop at exactly 12:00 AM on new year, and a thing
+                    that draws vector angles.
+                  </p>
+                  <p>I recommend Minesweeper and Snake. They're pretty fun.</p>
+                  <p id="holodoku" class="uhh">We don't talk about holodoku.</p>
+                </div>
+                <div class="vbox center">
+                  <a href="assets/random html.png" target="_blank">
+                    <img
+                      src="assets/random html.png"
+                      alt="a collage of screenshots from the various HTML programs"
+                    />
+                  </a>
+                  <figcaption>
+                    Collage of screenshots from the various HTML programs.<br />
+                    (Top left: Snake, Top Right: Margolus JS, Bottom Left:
+                    Minesweeper, Bottom Right: Vector Quantities, Rightmost: Tic
+                    Tac Toe)
+                  </figcaption>
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-        <li>
-          <div>
-            <h2>
-              Fractory (unfinished) (Rust:Bevy/macroquad) -
-              <a href="https://github.com/raffimolero/fractory-game/tree/dev"
-                >[Functionality]</a
-              >
-              -
-              <a href="https://github.com/raffimolero/fractory-game/tree/bevy"
-                >[Animations]</a
-              >
-            </h2>
-            <div class="hbox">
-              <div class="vbox">
-                <p>
-                  A game that's supposed to be about manipulating fractals and
-                  building factories. It's also too ambitious to exist right
-                  now.
-                </p>
-                <p>
-                  Built only because of my love of recursion, data structures,
-                  and algorithms. The main game logic works, but I struggled
-                  with making a proper UI for the game. Maybe one day it will
-                  have something good enough to play with.
-                </p>
-              </div>
-              <div class="vbox center">
-                <a href="assets/fractory dev.png" target="_blank">
-                  <img
-                    src="assets/fractory dev.png"
-                    alt="Image of a random useless in-game machine"
-                  />
-                </a>
-                <figcaption>
-                  Image of a random useless in-game machine
-                </figcaption>
+          </li>
+          <li>
+            <div>
+              <h2>
+                SchedBuilder (React/TS on GitHub Pages) -
+                <a href="https://pordafeople.github.io/schedbuilder/">[page]</a>
+                -
+                <a href="https://github.com/pordafeople/schedbuilder"
+                  >[repository]</a
+                >
+              </h2>
+              <div class="hbox">
+                <div class="vbox">
+                  <p>
+                    Generates a pretty image of your schedule just from pasting
+                    in your AdDU SIS data!
+                  </p>
+                  <p>
+                    It parses the raw schedule data using regex, and uses React
+                    to build an HTML table fully styled and to-scale based on
+                    how long a class period is.
+                  </p>
+                  <p>
+                    Built with Vite, React, and TypeScript, set up with a
+                    workflow to automatically deploy on GitHub Pages when there
+                    is a push to the main branch. Don't worry, it can't store
+                    any data anywhere.
+                  </p>
+                </div>
+                <div class="vbox center">
+                  <a href="assets/Schedule.png" target="_blank">
+                    <img
+                      src="assets/Schedule.png"
+                      alt="Sample schedule generated by the program"
+                    />
+                  </a>
+                  <figcaption>
+                    Sample schedule generated by the program.<br />
+                    Image edited to include input on the right.
+                  </figcaption>
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-      </ul>
+          </li>
+          <li>
+            <div>
+              <h2>
+                <a href="https://github.com/raffimolero/kelasu"
+                  >Discord Board game bot (Rust:poise on Discord)</a
+                >
+              </h2>
+              <div class="hbox">
+                <div class="vbox">
+                  <p>
+                    This is a Discord bot that I wrote in Rust and used to run
+                    on my local machine that allows 2 players to play a board
+                    game.
+                  </p>
+                  <p>
+                    One player sends a command to host a new lobby, another
+                    player will join, and then both players choose a color
+                    (Red/Blue). Then the game will be played and displayed as
+                    text. It has buttons for players to make their move, and
+                    supports resigning.
+                  </p>
+                  <p>
+                    I've also made another Discord bot in Node.js, but I've
+                    since lost those files.
+                  </p>
+                </div>
+                <div class="vbox center">
+                  <a href="assets/kelasu.png" target="_blank">
+                    <img
+                      src="assets/kelasu.png"
+                      alt="Screenshot of an ongoing game"
+                    />
+                  </a>
+                  <figcaption>
+                    Screenshot of an ongoing game<br />
+                    legend has it the game is still ongoing
+                  </figcaption>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h2>
+                Fractory (unfinished) (Rust:Bevy/macroquad) -
+                <a href="https://github.com/raffimolero/fractory-game/tree/dev"
+                  >[Functionality]</a
+                >
+                -
+                <a href="https://github.com/raffimolero/fractory-game/tree/bevy"
+                  >[Animations]</a
+                >
+              </h2>
+              <div class="hbox">
+                <div class="vbox">
+                  <p>
+                    A game that's supposed to be about manipulating fractals and
+                    building factories. It's also too ambitious to exist right
+                    now.
+                  </p>
+                  <p>
+                    Built only because of my love of recursion, data structures,
+                    and algorithms. The main game logic works, but I struggled
+                    with making a proper UI for the game. Maybe one day it will
+                    have something good enough to play with.
+                  </p>
+                </div>
+                <div class="vbox center">
+                  <a href="assets/fractory dev.png" target="_blank">
+                    <img
+                      src="assets/fractory dev.png"
+                      alt="Image of a random useless in-game machine"
+                    />
+                  </a>
+                  <figcaption>
+                    Image of a random useless in-game machine
+                  </figcaption>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <hr />
+      <div>
+        <footer>
+          <p class="uhh center">meow</p>
+        </footer>
+      </div>
     </div>
   </body>
 </html>
