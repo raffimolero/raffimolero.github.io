@@ -17,6 +17,10 @@ body {
   border-radius: 30px;
 }
 
+section:not(:nth-child(1), :nth-last-child(1)) {
+  margin-top: 6em;
+}
+
 hr {
   margin: 2em 0;
 }
@@ -36,7 +40,7 @@ h3 {
 ol,
 ul {
   margin: 0;
-  padding: 1em 3em;
+  padding: 1em 2vw 1em calc(1vw + 1em);
   background-color: #cde;
   border-left: 6px solid #678;
   border-radius: 0 1em 1em 0;
@@ -96,7 +100,8 @@ img {
   border-radius: 1em;
 }
 
-figcaption {
+figcaption,
+.light {
   color: #456;
 }
 
@@ -151,6 +156,11 @@ p.uhh:hover {
 
   .hbox {
     flex-direction: column;
+  }
+  .hbox > *:not(:nth-last-child(1)) {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-bottom: 1px dashed #888;
   }
 
   img {
