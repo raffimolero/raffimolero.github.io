@@ -74,15 +74,15 @@ class Question {
   constructor(q, a, c, w) {
     this.question = q;
     this.answer = a;
-    this.correct = 0;
-    this.wrong = 0;
+    this.correct = c;
+    this.wrong = w;
   }
 
   /**
    * @returns {number}
    */
   weight() {
-    return Math.max(1, this.wrong - this.correct);
+    return Math.max(1, (this.wrong - this.correct) * 10);
   }
 }
 
@@ -140,7 +140,7 @@ class Questions {
   to_text() {
     let out = "";
     for (const { question, answer, correct, wrong } of this.question_list) {
-      out += `${question}\n- ${answer}\n+${correct} -${wrong}\n\n`;
+      out += `${question}\n+${correct} -${wrong}\n- ${answer}\n\n`;
     }
     return out;
   }
@@ -164,14 +164,28 @@ class Questions {
         changed++;
         continue;
       }
-      if (existing.answer === item.answer) {
-        continue;
+
+      let is_changed = false;
+
+      if (existing.correct !== item.correct) {
+        existing.correct = item.correct;
+        is_changed = true;
       }
-      console.log(
-        `UPDATED ANSWER:\n${item.question}\nX ${existing.answer}\n/ ${item.answer}`
-      );
-      existing.answer = item.answer;
-      changed++;
+      if (existing.wrong !== item.wrong) {
+        existing.wrong = item.wrong;
+        is_changed = true;
+      }
+      if (existing.answer !== item.answer) {
+        console.log(
+          `UPDATED ANSWER:\n${item.question}\nX ${existing.answer}\n/ ${item.answer}`
+        );
+        existing.answer = item.answer;
+        is_changed = true;
+      }
+
+      if (is_changed) {
+        changed++;
+      }
     }
     return changed;
   }
@@ -188,6 +202,31 @@ class Game {
     this.reset();
   }
 
+  /**
+   * @returns {{
+   *   weights: number[],
+   *   sum: number,
+   * }}
+   */
+  weights() {
+    const weights = questions.question_list
+      .slice(0, this.cur_max_question_index)
+      .map((q) => q.weight());
+    return {
+      weights,
+      sum: weights.reduce((a, b) => a + b),
+    };
+  }
+
+  can_move_on() {
+    for (const question of questions.question_list) {
+      if (question.wrong > question.correct) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   reset() {
     this.cur_question_index = 0;
     this.cur_max_question_index = 1;
@@ -201,15 +240,22 @@ class Game {
   check(guess) {
     const question = questions.question_list[this.cur_question_index];
     const is_correct = question.answer === guess;
-    // HACK: check caps here
     if (is_correct) {
       question.correct++;
+      if (
+        this.can_move_on() &&
+        this.cur_max_question_index + 1 < questions.question_list.length
+      ) {
+        this.cur_max_question_index++;
+      }
     } else {
+      // HACK: check caps here
       if (question.answer === guess.toUpperCase()) {
         alert("Don't forget CAPS LOCK!");
       }
       question.wrong++;
     }
+
     return is_correct;
   }
 
@@ -217,10 +263,7 @@ class Game {
    * @returns {Question}
    */
   next() {
-    const weights = questions.question_list
-      .slice(0, this.cur_max_question_index)
-      .map((q) => q.weight());
-    const sum = weights.reduce((a, b) => a + b);
+    const { weights, sum } = this.weights();
 
     let choice = rand_int(sum);
     for (let i = 0; i < weights.length; i++) {
