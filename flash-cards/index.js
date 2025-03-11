@@ -268,6 +268,9 @@ class Game {
   /** @type {number} */
   cur_question_index;
 
+  /** @type {number[]} */
+  recent_questions;
+
   constructor() {
     this.reset();
   }
@@ -275,6 +278,7 @@ class Game {
   reset() {
     this.cur_question_index = 0;
     this.cur_max_question_index = 3;
+    this.recent_questions = [];
     questions.shuffle();
   }
 
@@ -301,7 +305,13 @@ class Game {
   weights() {
     const weights = this.available_questions().map((q, i) => q.weight());
     console.log(weights);
-    weights[this.cur_question_index] = 0;
+
+    for (let i = 0; i < this.recent_questions.length; i++) {
+      const q = this.recent_questions[i];
+      weights[q] -= weights[q] / (i + 1);
+    }
+    console.log(weights);
+
     return {
       weights,
       sum: weights.reduce((a, b) => a + b),
@@ -312,12 +322,17 @@ class Game {
    * @returns {boolean}
    */
   can_move_on() {
+    if (this.cur_max_question_index >= questions.question_list.length) {
+      return false;
+    }
+
+    let weak_count = 0;
     for (const question of this.available_questions()) {
       if (question.confidence < 1) {
-        return false;
+        weak_count++;
       }
     }
-    return true;
+    return weak_count < 5;
   }
 
   /**
@@ -330,11 +345,7 @@ class Game {
   check(guess) {
     const question = questions.question_list[this.cur_question_index];
     const result = question.check(guess);
-    if (
-      result.is_correct &&
-      this.can_move_on() &&
-      this.cur_max_question_index < questions.question_list.length
-    ) {
+    if (this.can_move_on()) {
       this.cur_max_question_index++;
     }
 
@@ -362,6 +373,11 @@ class Game {
       }
       questions.question_list[i].skip(this.cur_max_question_index);
     }
+
+    if (this.recent_questions.length >= this.cur_max_question_index) {
+      this.recent_questions.pop();
+    }
+    this.recent_questions.unshift(this.cur_question_index);
 
     return questions.question_list[this.cur_question_index];
   }
