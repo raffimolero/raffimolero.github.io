@@ -199,11 +199,8 @@ class Questions {
         existing.wrong = item.wrong;
         is_changed = true;
       }
-      if (existing.answer !== item.answer) {
-        console.log(
-          `UPDATED ANSWER:\n${item.question}\nX ${existing.answer}\n/ ${item.answer}`
-        );
-        existing.answer = item.answer;
+      if (JSON.stringify(existing.answers) !== JSON.stringify(item.answers)) {
+        existing.answers = item.answers;
         is_changed = true;
       }
 
