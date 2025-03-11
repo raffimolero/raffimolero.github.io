@@ -321,27 +321,7 @@ class Game {
 // GLOBAL VARIABLES
 // ===================================================
 
-let questions = Questions.from_text(`
-What is the atomic number of oxygen?
-- 8
-- EIGHT
-
-What is the smallest prime number?
-- 2
-- TWO
-
-What is the SI unit for electric current?
-- AMPERE
-
-What is the hardest naturally occurring mineral on Earth? 
-- DIAMOND
-
-In what sport would you perform a slam dunk?
-- BASKETBALL
-
-What is the economic term for a prolonged period of high unemployment and low economic activity?
-- RECESSION
-`);
+let questions = Questions.from_text(QUESTIONS);
 
 let game = new Game();
 
