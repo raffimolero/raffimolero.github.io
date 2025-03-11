@@ -16,6 +16,38 @@ const answer_box =
   /** @type {HTMLInputElement} */
   (document.getElementById("answer_box"));
 
+const answer_msg =
+  /** @type {HTMLHeadingElement} */
+  (document.getElementById("answer_msg"));
+
+const restart_button =
+  /** @type {HTMLButtonElement} */
+  (document.getElementById("restart_button"));
+
+// ===================================================
+// FUNCTIONS
+// ===================================================
+
+/**
+ * @param {number} n
+ * @returns {number}
+ */
+function rand_int(n) {
+  return Math.floor(Math.random() * n);
+}
+
+/**
+ * Shuffles an array in-place.
+ * @template T
+ * @param {T[]} arr
+ */
+function shuffle(arr) {
+  for (let i = 0; i < arr.length; i++) {
+    let choice = i + rand_int(arr.length - i);
+    [arr[i], arr[choice]] = [arr[choice], arr[i]];
+  }
+}
+
 // ===================================================
 // CLASSES
 // ===================================================
@@ -36,8 +68,10 @@ class Question {
   /**
    * @param {string} q
    * @param {string} a
+   * @param {number} c
+   * @param {number} w
    */
-  constructor(q, a) {
+  constructor(q, a, c, w) {
     this.question = q;
     this.answer = a;
     this.correct = 0;
@@ -53,14 +87,16 @@ class Question {
 }
 
 class Questions {
+  static REGEX_FOR_SCORE = /\+(\d+) -(\d+)/;
+
   /** @type {Question[]} */
-  questions;
+  question_list;
 
   /**
    * @param {Question[]} questions
    */
   constructor(questions) {
-    this.questions = questions;
+    this.question_list = questions;
   }
 
   /**
@@ -70,18 +106,29 @@ class Questions {
   static from_text(text) {
     const out = [];
 
-    let q = "";
+    let question = "";
+    let correct = 0;
+    let wrong = 0;
     for (const line of text.split(/\n+/)) {
       if (line.trim().length === 0 || line.startsWith("#")) {
         continue;
       }
 
-      if (line.startsWith("-")) {
-        out.push(new Question(q.trimEnd(), line.slice(2)));
-        q = "";
+      let score = line.match(this.REGEX_FOR_SCORE);
+      if (score !== null) {
+        correct = parseInt(score[1]);
+        wrong = parseInt(score[2]);
         continue;
       }
-      q += line + "\n";
+
+      if (line.startsWith("-")) {
+        out.push(
+          new Question(question.trimEnd(), line.slice(2), correct, wrong)
+        );
+        question = "";
+        continue;
+      }
+      question += line + "\n";
     }
 
     return new Questions(out);
@@ -92,10 +139,14 @@ class Questions {
    */
   to_text() {
     let out = "";
-    for (const { question: q, answer: a } of this.questions) {
-      out += `${q}\n- ${a}\n\n`;
+    for (const { question, answer, correct, wrong } of this.question_list) {
+      out += `${question}\n- ${answer}\n+${correct} -${wrong}\n\n`;
     }
     return out;
+  }
+
+  shuffle() {
+    shuffle(this.question_list);
   }
 
   /**
@@ -104,12 +155,12 @@ class Questions {
    */
   merge(other) {
     let changed = 0;
-    for (const item of other.questions) {
-      const existing = this.questions.find(
+    for (const item of other.question_list) {
+      const existing = this.question_list.find(
         (existing) => existing.question === item.question
       );
       if (existing === undefined) {
-        this.questions.push(item);
+        this.question_list.push(item);
         changed++;
         continue;
       }
@@ -126,6 +177,64 @@ class Questions {
   }
 }
 
+class Game {
+  /** @type {number} */
+  cur_max_question_index;
+
+  /** @type {number} */
+  cur_question_index;
+
+  constructor() {
+    this.reset();
+  }
+
+  reset() {
+    this.cur_question_index = 0;
+    this.cur_max_question_index = 1;
+    questions.shuffle();
+  }
+
+  /**
+   * @param {string} guess
+   * @returns {boolean}
+   */
+  check(guess) {
+    const question = questions.question_list[this.cur_question_index];
+    const is_correct = question.answer === guess;
+    // HACK: check caps here
+    if (is_correct) {
+      question.correct++;
+    } else {
+      if (question.answer === guess.toUpperCase()) {
+        alert("Don't forget CAPS LOCK!");
+      }
+      question.wrong++;
+    }
+    return is_correct;
+  }
+
+  /**
+   * @returns {Question}
+   */
+  next() {
+    const weights = questions.question_list
+      .slice(0, this.cur_max_question_index)
+      .map((q) => q.weight());
+    const sum = weights.reduce((a, b) => a + b);
+
+    let choice = rand_int(sum);
+    for (let i = 0; i < weights.length; i++) {
+      choice -= weights[i];
+      if (choice < 0) {
+        this.cur_question_index = i;
+        break;
+      }
+    }
+
+    return questions.question_list[this.cur_question_index];
+  }
+}
+
 // ===================================================
 // GLOBAL VARIABLES
 // ===================================================
@@ -137,9 +246,7 @@ Which country has the largest oil reserves?
 - VENEZUELA
 `);
 
-// ===================================================
-// FUNCTIONS
-// ===================================================
+let game = new Game();
 
 // ===================================================
 // HTML ELEMENT FUNCTIONS
@@ -160,16 +267,36 @@ function view_questions() {
   add_questions_box.value = questions.to_text();
 }
 
+function next_question() {
+  question_box.value = game.next().question;
+  answer_box.value = "";
+}
+
 /**
  * @param {KeyboardEvent} e
  */
 function input_answer(e) {
-  if (e.key === "Enter") {
-    alert(answer_box.value);
+  if (e.key !== "Enter") {
+    return;
   }
+
+  const is_correct = game.check(answer_box.value);
+  if (is_correct) {
+    answer_msg.innerText = "Answer: Correct :)";
+  } else {
+    answer_msg.innerText = "Answer: Incorrect :(";
+  }
+  next_question();
+}
+
+function restart() {
+  game.reset();
+  next_question();
+  restart_button.innerText = "Restart Game";
 }
 
 // ===================================================
 // MAIN
 // ===================================================
 view_questions();
+restart();
