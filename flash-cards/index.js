@@ -95,6 +95,14 @@ class Question {
   }
 
   /**
+   * reduces confidence based on how long it's been since this question was asked
+   * @param {number} question_count
+   */
+  skip(question_count) {
+    // do nothing
+  }
+
+  /**
    * @param {string} guess
    * @returns {{
    *   is_correct: boolean,
@@ -346,6 +354,13 @@ class Game {
         this.cur_question_index = i;
         break;
       }
+    }
+
+    for (let i = 0; i < this.cur_max_question_index; i++) {
+      if (i === choice) {
+        continue;
+      }
+      questions.question_list[i].skip(this.cur_max_question_index);
     }
 
     return questions.question_list[this.cur_question_index];
