@@ -32,8 +32,16 @@ const restart_button =
  * @param {number} n
  * @returns {number}
  */
+function rand(n) {
+  return Math.random() * n;
+}
+
+/**
+ * @param {number} n
+ * @returns {number}
+ */
 function rand_int(n) {
-  return Math.floor(Math.random() * n);
+  return Math.floor(rand(n));
 }
 
 /**
@@ -82,7 +90,10 @@ class Question {
    * @returns {number}
    */
   weight() {
-    return Math.max(1, (this.wrong - this.correct) * 10);
+    const diff = this.wrong - this.correct;
+    const sum = this.wrong + this.correct;
+    const score = ((diff + 1) * 10) / (sum + 1);
+    return Math.max(1.0, score);
   }
 }
 
@@ -203,24 +214,36 @@ class Game {
   }
 
   /**
+   * @returns {Question[]}
+   */
+  available_questions() {
+    return questions.question_list.slice(0, this.cur_max_question_index);
+  }
+
+  /**
    * @returns {{
    *   weights: number[],
    *   sum: number,
    * }}
    */
   weights() {
-    const weights = questions.question_list
-      .slice(0, this.cur_max_question_index)
-      .map((q) => q.weight());
+    const weights = this.available_questions().map((q) => q.weight());
+    console.log(weights);
     return {
       weights,
       sum: weights.reduce((a, b) => a + b),
     };
   }
 
+  /**
+   * @returns {boolean}
+   */
   can_move_on() {
-    for (const question of questions.question_list) {
+    for (const question of this.available_questions()) {
       if (question.wrong > question.correct) {
+        return false;
+      }
+      if (question.correct === 0) {
         return false;
       }
     }
@@ -265,10 +288,10 @@ class Game {
   next() {
     const { weights, sum } = this.weights();
 
-    let choice = rand_int(sum);
+    let choice = rand(sum);
     for (let i = 0; i < weights.length; i++) {
       choice -= weights[i];
-      if (choice < 0) {
+      if (choice < 0.0) {
         this.cur_question_index = i;
         break;
       }
