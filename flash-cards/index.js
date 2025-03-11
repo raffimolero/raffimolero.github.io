@@ -228,7 +228,6 @@ class Game {
    */
   weights() {
     const weights = this.available_questions().map((q) => q.weight());
-    console.log(weights);
     return {
       weights,
       sum: weights.reduce((a, b) => a + b),
@@ -341,11 +340,14 @@ function next_question() {
 /**
  * @param {KeyboardEvent} e
  */
-function input_answer(e) {
+function input_answer_on_enter(e) {
   if (e.key !== "Enter") {
     return;
   }
+  input_answer();
+}
 
+function input_answer() {
   const is_correct = game.check(answer_box.value);
   if (is_correct) {
     answer_msg.innerText = "Answer: Correct :)";
@@ -359,10 +361,10 @@ function restart() {
   game.reset();
   next_question();
   restart_button.innerText = "Restart Game";
+  add_questions_box.value = "# Add more questions here :)";
 }
 
 // ===================================================
 // MAIN
 // ===================================================
 view_questions();
-restart();

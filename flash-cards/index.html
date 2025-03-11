@@ -8,32 +8,6 @@
   </head>
   <body>
     <h1>Flash Cards!</h1>
-
-    <br />
-    <hr />
-    <br />
-
-    <h2>Input your questions and answers here:</h2>
-    <textarea
-      id="add_questions_box"
-      name="add_questions_box"
-      rows="12"
-      cols="80"
-    ></textarea>
-    <br />
-    <button onclick="register_questions()">
-      Register questions and answers
-    </button>
-    <button onclick="view_questions()">
-      View existing questions and answers
-    </button>
-    <br />
-
-    <br />
-    <hr />
-    <br />
-
-    <h1>Play the game here!</h1>
     <br />
 
     <button id="restart_button" onclick="restart()">Start Game</button>
@@ -53,9 +27,29 @@
       id="answer_box"
       name="answer_box"
       type="text"
-      onkeyup="input_answer(event)"
+      onkeyup="input_answer_on_enter(event)"
     />
-    <div id="out_html"></div>
+    <button onclick="input_answer()">Submit answer</button>
+
+    <hr />
+
+    <h1>View/Edit stats here!</h1>
+    <br />
+    <h2>Input your questions and answers here:</h2>
+    <textarea
+      id="add_questions_box"
+      name="add_questions_box"
+      rows="12"
+      cols="80"
+    ></textarea>
+    <br />
+    <button onclick="register_questions()">
+      Register/Update Questions/Answers/Scores
+    </button>
+    <button onclick="view_questions()">
+      View existing Questions/Answers/Scores
+    </button>
+
     <script src="index.js"></script>
   </body>
 </html>

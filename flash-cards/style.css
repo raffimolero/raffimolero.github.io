@@ -1,16 +1,31 @@
-body, * {
+body {
+  padding: 20px;
   background-color: #202020;
+}
+
+h1 {
+  font-size: x-large;
+}
+
+* {
   color: white;
-  font-family: Comic Sans MS;
   margin: 2px;
   padding: 0 4px;
+  font-family: Comic Sans MS;
+  font-size: large;
+}
+
+hr {
+  margin: 2em 0;
 }
 
 div {
   margin: 8px;
 }
 
-input, textarea, button {
+input,
+textarea,
+button {
   border: 1px solid #404040;
 }
 
@@ -30,7 +45,8 @@ button:active {
   background-color: #404040;
 }
 
-input, textarea {
+input,
+textarea {
   background-color: #404040;
   font-size: x-large;
   padding: 12px;
@@ -41,7 +57,7 @@ input {
   font-size: large;
 }
 
-table {  
+table {
   border: 2px solid #808080;
   border-collapse: collapse;
 }
