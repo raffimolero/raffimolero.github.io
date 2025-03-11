@@ -68,8 +68,8 @@ class Question {
   /** @type {string} */
   question;
 
-  /** @type {string} */
-  answer;
+  /** @type {string[]} */
+  answers;
 
   /** @type {number} */
   correct;
@@ -79,13 +79,13 @@ class Question {
 
   /**
    * @param {string} q
-   * @param {string} a
+   * @param {string[]} a
    * @param {number} c
    * @param {number} w
    */
   constructor(q, a, c, w) {
     this.question = q;
-    this.answer = a;
+    this.answers = a;
     this.correct = c;
     this.wrong = w;
   }
@@ -122,10 +122,18 @@ class Questions {
     const out = [];
 
     let question = "";
+    let answers = [];
     let correct = 0;
     let wrong = 0;
-    for (const line of text.split(/\n+/)) {
+    for (const line of text.split(/\n/)) {
       if (line.trim().length === 0 || line.startsWith("#")) {
+        if (answers.length > 0) {
+          out.push(new Question(question.trimEnd(), answers, correct, wrong));
+          question = "";
+          answers = [];
+          correct = 0;
+          wrong = 0;
+        }
         continue;
       }
 
@@ -137,10 +145,7 @@ class Questions {
       }
 
       if (line.startsWith("-")) {
-        out.push(
-          new Question(question.trimEnd(), line.slice(2), correct, wrong)
-        );
-        question = "";
+        answers.push(line.slice(2));
         continue;
       }
       question += line + "\n";
@@ -154,8 +159,12 @@ class Questions {
    */
   to_text() {
     let out = "";
-    for (const { question, answer, correct, wrong } of this.question_list) {
-      out += `${question}\n+${correct} -${wrong}\n- ${answer}\n\n`;
+    for (const { question, answers, correct, wrong } of this.question_list) {
+      out += `${question}\n+${correct} -${wrong}\n`;
+      for (const answer of answers) {
+        out += `- ${answer}\n`;
+      }
+      out += "\n";
     }
     return out;
   }
@@ -222,6 +231,13 @@ class Game {
    */
   available_questions() {
     return questions.question_list.slice(0, this.cur_max_question_index);
+  }
+
+  /**
+   * @returns {Question}
+   */
+  current_question() {
+    return questions.question_list[this.cur_question_index];
   }
 
   /**
@@ -309,10 +325,25 @@ class Game {
 // ===================================================
 
 let questions = Questions.from_text(`
-Who was the first Democrat U.S. President?
-- ANDREW JACKSON
-Which country has the largest oil reserves?
-- VENEZUELA
+What is the atomic number of oxygen?
+- 8
+- EIGHT
+
+What is the smallest prime number?
+- 2
+- TWO
+
+What is the SI unit for electric current?
+- AMPERE
+
+What is the hardest naturally occurring mineral on Earth? 
+- DIAMOND
+
+In what sport would you perform a slam dunk?
+- BASKETBALL
+
+What is the economic term for a prolonged period of high unemployment and low economic activity?
+- RECESSION
 `);
 
 let game = new Game();
@@ -357,7 +388,9 @@ function input_answer() {
   if (is_correct) {
     answer_msg.innerText = "Answer: Correct :)";
   } else {
-    answer_msg.innerText = "Answer: Incorrect :(";
+    answer_msg.innerText = `Answer: ${
+      game.current_question().answers[0]
+    } Incorrect :(`;
   }
   next_question();
 }
