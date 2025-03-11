@@ -12,6 +12,10 @@ const question_box =
   /** @type {HTMLTextAreaElement} */
   (document.getElementById("question_box"));
 
+const score_msg =
+  /** @type {HTMLHeadingElement} */
+  (document.getElementById("score_msg"));
+
 const answer_box =
   /** @type {HTMLInputElement} */
   (document.getElementById("answer_box"));
@@ -335,6 +339,7 @@ function view_questions() {
 function next_question() {
   question_box.value = game.next().question;
   answer_box.value = "";
+  update_score();
 }
 
 /**
@@ -359,9 +364,19 @@ function input_answer() {
 
 function restart() {
   game.reset();
-  next_question();
   restart_button.innerText = "Restart Game";
   add_questions_box.value = "# Add more questions here :)";
+  next_question();
+}
+
+function update_score() {
+  let correct = 0;
+  let wrong = 0;
+  for (const question of questions.question_list) {
+    correct += question.correct;
+    wrong += question.wrong;
+  }
+  score_msg.innerText = `Correct: ${correct}, Wrong: ${wrong}`;
 }
 
 // ===================================================
