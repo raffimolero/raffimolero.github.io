@@ -318,9 +318,11 @@ Which organ in the human body produces insulin?
 
 What is the term for a prolonged period of economic growth followed by a sharp decline?
 - BOOM-AND-BUST CYCLE
+- BOOM AND BUST CYCLE
 
 Which unit is used to measure sound intensity?
 - DECIBEL
+- DECIBELS
 
 Which chemical compound is responsible for the distinctive smell of rotten eggs?
 - HYDROGEN SULFIDE
@@ -461,6 +463,7 @@ What is the limit of (1 + 1/n)ⁿ as n approaches infinity?
 - E
 
 What type of electromagnetic radiation has the highest frequency?
+- GAMMA RAY
 - GAMMA RAYS
 
 Who was the first Prime Minister of the United Kingdom?

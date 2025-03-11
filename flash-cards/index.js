@@ -428,16 +428,18 @@ function input_answer_on_enter(e) {
 
 function input_answer() {
   const { is_correct, remarks } = game.check(answer_box.value);
+
+  let msg = `Answer: ${game.current_question().answers[0]} - `;
+
   if (is_correct) {
-    answer_msg.innerText = "Answer: Correct :)";
+    msg += `Correct :)`;
     if (remarks !== null) {
-      answer_msg.innerText += ` (${remarks})`;
+      msg += ` (${remarks})`;
     }
   } else {
-    answer_msg.innerText = `Answer: ${
-      game.current_question().answers[0]
-    } - Incorrect :(`;
+    msg += `Incorrect :(`;
   }
+  answer_msg.innerText = msg;
   next_question();
 }
 
