@@ -22,18 +22,33 @@ const answer_box =
 
 class Question {
   /** @type {string} */
-  q;
+  question;
 
   /** @type {string} */
-  a;
+  answer;
+
+  /** @type {number} */
+  correct;
+
+  /** @type {number} */
+  wrong;
 
   /**
    * @param {string} q
    * @param {string} a
    */
   constructor(q, a) {
-    this.q = q;
-    this.a = a;
+    this.question = q;
+    this.answer = a;
+    this.correct = 0;
+    this.wrong = 0;
+  }
+
+  /**
+   * @returns {number}
+   */
+  weight() {
+    return Math.max(1, this.wrong - this.correct);
   }
 }
 
@@ -57,12 +72,12 @@ class Questions {
 
     let q = "";
     for (const line of text.split(/\n+/)) {
-      console.log(line);
+      if (line.trim().length === 0 || line.startsWith("#")) {
+        continue;
+      }
+
       if (line.startsWith("-")) {
-        out.push({
-          q: q.trimEnd(),
-          a: line.slice(2),
-        });
+        out.push(new Question(q.trimEnd(), line.slice(2)));
         q = "";
         continue;
       }
@@ -77,7 +92,7 @@ class Questions {
    */
   to_text() {
     let out = "";
-    for (const { q, a } of this.questions) {
+    for (const { question: q, answer: a } of this.questions) {
       out += `${q}\n- ${a}\n\n`;
     }
     return out;
@@ -85,23 +100,29 @@ class Questions {
 
   /**
    * @param {Questions} other
+   * @returns {number} How many questions were added/changed.
    */
   merge(other) {
+    let changed = 0;
     for (const item of other.questions) {
-      const existing = this.questions.find((existing) => existing.q === item.q);
-      if (existing !== undefined) {
-        if (existing.a === item.a) {
-          continue;
-        } else {
-          console.log(
-            `UPDATED ANSWER:\n${item.q}\nX ${existing.a}\n/ ${item.a}`
-          );
-        }
+      const existing = this.questions.find(
+        (existing) => existing.question === item.question
+      );
+      if (existing === undefined) {
+        this.questions.push(item);
+        changed++;
         continue;
       }
-
-      this.questions.push(item);
+      if (existing.answer === item.answer) {
+        continue;
+      }
+      console.log(
+        `UPDATED ANSWER:\n${item.question}\nX ${existing.answer}\n/ ${item.answer}`
+      );
+      existing.answer = item.answer;
+      changed++;
     }
+    return changed;
   }
 }
 
@@ -109,16 +130,12 @@ class Questions {
 // GLOBAL VARIABLES
 // ===================================================
 
-let questions = new Questions([
-  {
-    q: "Who was the first Democrat U.S. President?",
-    a: "ANDREW JACKSON",
-  },
-  {
-    q: "Which country has the largest oil reserves?",
-    a: "VENEZUELA",
-  },
-]);
+let questions = Questions.from_text(`
+Who was the first Democrat U.S. President?
+- ANDREW JACKSON
+Which country has the largest oil reserves?
+- VENEZUELA
+`);
 
 // ===================================================
 // FUNCTIONS
@@ -128,21 +145,18 @@ let questions = new Questions([
 // HTML ELEMENT FUNCTIONS
 // ===================================================
 
-/**
- * @param {MouseEvent} e
- */
-function register_questions(e) {
+function register_questions() {
   const new_questions = Questions.from_text(add_questions_box.value);
-  questions.merge(new_questions);
+  const changed = questions.merge(new_questions);
 
-  alert("Added new questions.");
-  add_questions_box.value = "";
+  let message = "No questions added/changed.";
+  if (changed > 0) {
+    message = `Added/Changed ${changed} question${changed === 1 ? "" : "s"}.`;
+  }
+  add_questions_box.value = `# ${message}`;
 }
 
-/**
- * @param {MouseEvent} e
- */
-function view_questions(e) {
+function view_questions() {
   add_questions_box.value = questions.to_text();
 }
 
@@ -154,3 +168,8 @@ function input_answer(e) {
     alert(answer_box.value);
   }
 }
+
+// ===================================================
+// MAIN
+// ===================================================
+view_questions();
