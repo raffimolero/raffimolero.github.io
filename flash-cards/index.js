@@ -281,7 +281,7 @@ class Game {
    */
   check(guess) {
     const question = questions.question_list[this.cur_question_index];
-    const is_correct = question.answer === guess;
+    const is_correct = question.answers.includes(guess);
     if (is_correct) {
       question.correct++;
       if (
@@ -292,7 +292,7 @@ class Game {
       }
     } else {
       // HACK: check caps here
-      if (question.answer === guess.toUpperCase()) {
+      if (question.answers.includes(guess.toUpperCase())) {
         alert("Don't forget CAPS LOCK!");
       }
       question.wrong++;
@@ -390,7 +390,7 @@ function input_answer() {
   } else {
     answer_msg.innerText = `Answer: ${
       game.current_question().answers[0]
-    } Incorrect :(`;
+    } - Incorrect :(`;
   }
   next_question();
 }
