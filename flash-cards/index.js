@@ -77,6 +77,9 @@ class Question {
   /** @type {number} */
   wrong;
 
+  /** @type {number} */
+  confidence;
+
   /**
    * @param {string} q
    * @param {string[]} a
@@ -88,6 +91,44 @@ class Question {
     this.answers = a;
     this.correct = c;
     this.wrong = w;
+    this.confidence = 0;
+  }
+
+  /**
+   * @param {string} guess
+   * @returns {{
+   *   is_correct: boolean,
+   *   remarks: string | null,
+   * }}
+   */
+  check(guess) {
+    let is_correct;
+    let remarks = null;
+    let weight;
+
+    if (this.answers.includes(guess)) {
+      is_correct = true;
+    } else if (this.answers.includes(guess.toUpperCase())) {
+      is_correct = true;
+      remarks = "Don't forget CAPS LOCK!";
+    } else {
+      is_correct = false;
+    }
+
+    if (is_correct) {
+      this.correct++;
+      weight = 1;
+    } else {
+      this.wrong++;
+      weight = -1;
+    }
+
+    this.confidence = this.confidence / 2.0 + weight;
+
+    return {
+      is_correct,
+      remarks,
+    };
   }
 
   /**
@@ -96,8 +137,8 @@ class Question {
   weight() {
     const diff = this.wrong - this.correct;
     const sum = this.wrong + this.correct;
-    const score = ((diff + 1) * 10) / (sum + 1);
-    return Math.max(1.0, score);
+    const score = 2 - this.confidence;
+    return score * score * score;
   }
 }
 
@@ -223,6 +264,12 @@ class Game {
     this.reset();
   }
 
+  reset() {
+    this.cur_question_index = 0;
+    this.cur_max_question_index = 3;
+    questions.shuffle();
+  }
+
   /**
    * @returns {Question[]}
    */
@@ -244,7 +291,9 @@ class Game {
    * }}
    */
   weights() {
-    const weights = this.available_questions().map((q) => q.weight());
+    const weights = this.available_questions().map((q, i) => q.weight());
+    console.log(weights);
+    weights[this.cur_question_index] = 0;
     return {
       weights,
       sum: weights.reduce((a, b) => a + b),
@@ -256,46 +305,32 @@ class Game {
    */
   can_move_on() {
     for (const question of this.available_questions()) {
-      if (question.wrong > question.correct) {
-        return false;
-      }
-      if (question.correct === 0) {
+      if (question.confidence < 1) {
         return false;
       }
     }
     return true;
   }
 
-  reset() {
-    this.cur_question_index = 0;
-    this.cur_max_question_index = 1;
-    questions.shuffle();
-  }
-
   /**
    * @param {string} guess
-   * @returns {boolean}
+   * @returns {{
+   *   is_correct: boolean,
+   *   remarks: string | null,
+   * }}
    */
   check(guess) {
     const question = questions.question_list[this.cur_question_index];
-    const is_correct = question.answers.includes(guess);
-    if (is_correct) {
-      question.correct++;
-      if (
-        this.can_move_on() &&
-        this.cur_max_question_index < questions.question_list.length
-      ) {
-        this.cur_max_question_index++;
-      }
-    } else {
-      // HACK: check caps here
-      if (question.answers.includes(guess.toUpperCase())) {
-        alert("Don't forget CAPS LOCK!");
-      }
-      question.wrong++;
+    const result = question.check(guess);
+    if (
+      result.is_correct &&
+      this.can_move_on() &&
+      this.cur_max_question_index < questions.question_list.length
+    ) {
+      this.cur_max_question_index++;
     }
 
-    return is_correct;
+    return result;
   }
 
   /**
@@ -321,7 +356,7 @@ class Game {
 // GLOBAL VARIABLES
 // ===================================================
 
-let questions = Questions.from_text(QUESTIONS);
+let questions = Questions.from_text(QUESTIONS); // from questions.js, imported in the html before index.js
 
 let game = new Game();
 
@@ -361,9 +396,12 @@ function input_answer_on_enter(e) {
 }
 
 function input_answer() {
-  const is_correct = game.check(answer_box.value);
+  const { is_correct, remarks } = game.check(answer_box.value);
   if (is_correct) {
     answer_msg.innerText = "Answer: Correct :)";
+    if (remarks !== null) {
+      answer_msg.innerText += ` (${remarks})`;
+    }
   } else {
     answer_msg.innerText = `Answer: ${
       game.current_question().answers[0]

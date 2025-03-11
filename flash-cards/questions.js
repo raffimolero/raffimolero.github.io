@@ -61,6 +61,7 @@ Who is the philosopher behind the concept of categorical imperative?
 
 What is the largest Christian denomination in the world?
 - ROMAN CATHOLICISM
+- CATHOLICISM
 
 In what sport would you perform a slam dunk?
 - BASKETBALL
@@ -167,6 +168,7 @@ What physical quantity is measured in pascals?
 
 Which document officially declared the independence of the United States from Great Britain?
 - DECLARATION OF INDEPENDENCE
+- THE DECLARATION OF INDEPENDENCE
 
 Which psychologist is known for the theory of cognitive development?
 - JEAN PIAGET
@@ -208,7 +210,7 @@ What is the Fibonacci sequence's 10th term?
 - 55
 
 What is the name of the hypothetical particle that mediates the gravitational force?
-- Graviton
+- GRAVITON
 
 Which political philosopher wrote Leviathan?
 - THOMAS HOBBES
@@ -430,6 +432,7 @@ What philosophical concept suggests that "existence precedes essence"?
 
 In Christianity, what is the event in which Jesus Christ is believed to have risen from the dead?
 - RESURRECTION
+- THE RESURRECTION
 
 How many points is a touchdown worth in American football (excluding extra points)?
 - 6
