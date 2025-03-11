@@ -168,6 +168,7 @@ class Questions {
    * @returns {Questions}
    */
   static from_text(text) {
+    text += "\n";
     const out = [];
 
     let question = "";
@@ -194,7 +195,7 @@ class Questions {
       }
 
       if (line.startsWith("-")) {
-        answers.push(line.slice(2));
+        answers.push(line.slice(1).trim());
         continue;
       }
       question += line + "\n";
@@ -227,6 +228,7 @@ class Questions {
    * @returns {number} How many questions were added/changed.
    */
   merge(other) {
+    console.log(other);
     let changed = 0;
     for (const item of other.question_list) {
       const existing = this.question_list.find(
