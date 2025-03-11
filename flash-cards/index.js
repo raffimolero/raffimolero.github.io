@@ -244,7 +244,7 @@ class Game {
       question.correct++;
       if (
         this.can_move_on() &&
-        this.cur_max_question_index + 1 < questions.question_list.length
+        this.cur_max_question_index < questions.question_list.length
       ) {
         this.cur_max_question_index++;
       }
