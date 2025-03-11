@@ -1,0 +1,51 @@
+body, * {
+  background-color: #202020;
+  color: white;
+  font-family: Comic Sans MS;
+  margin: 2px;
+  padding: 0 4px;
+}
+
+div {
+  margin: 8px;
+}
+
+input, textarea, button {
+  border: 1px solid #404040;
+}
+
+textarea {
+  font-family: monospace;
+}
+
+button {
+  padding: 0.5em 1em;
+  background-color: #606060;
+  border-radius: 8px;
+}
+button:hover {
+  background-color: #808080;
+}
+button:active {
+  background-color: #404040;
+}
+
+input, textarea {
+  background-color: #404040;
+  font-size: x-large;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+input {
+  font-size: large;
+}
+
+table {  
+  border: 2px solid #808080;
+  border-collapse: collapse;
+}
+
+button:hover {
+  cursor: pointer;
+}

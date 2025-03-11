@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flash Cards</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Flash Cards!</h1>
+
+    <br />
+    <hr />
+    <br />
+
+    <h2>Input your questions and answers here:</h2>
+    <textarea
+      id="add_questions_box"
+      name="add_questions_box"
+      rows="12"
+      cols="80"
+    ></textarea>
+    <br />
+    <button onclick="register_questions()">
+      Register questions and answers
+    </button>
+    <button onclick="view_questions()">
+      View existing questions and answers
+    </button>
+    <br />
+
+    <br />
+    <hr />
+    <br />
+
+    <h1>Play the game here!</h1>
+    <br />
+
+    <h3>Question:</h3>
+    <textarea
+      id="question_box"
+      name="question_box"
+      rows="2"
+      cols="80"
+      value="(register questions first)"
+      readonly
+    ></textarea>
+    <br />
+
+    <h3>Answer:</h3>
+    <input
+      id="answer_box"
+      name="answer_box"
+      type="text"
+      onkeyup="input_answer(event)"
+    />
+    <div id="out_html"></div>
+    <script src="index.js"></script>
+  </body>
+</html>
