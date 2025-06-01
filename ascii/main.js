@@ -34,8 +34,10 @@ function updateColorCount() {
   if (count < colors.length) {
     colors = colors.slice(0, count);
   } else {
+    const choose = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const randCol = () => choose([0, 64, 128, 192, 255]);
     while (colors.length < count) {
-      colors.push([255, 255, 255, 255]); // Default color white
+      colors.push({ name: "color", color: [randCol(), randCol(), randCol()] });
     }
   }
 
