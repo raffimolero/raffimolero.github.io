@@ -21,7 +21,7 @@
           onchange="updateColorCount()"
         />
         <label for="color-count">Number of colors</label>
-        <div class="color-pickers" id="color-pickers"></div>
+        <div class="vbox color-pickers" id="color-pickers"></div>
         <br />
         <input
           type="number"
@@ -65,6 +65,10 @@
         >
       </div>
     </div>
+    <br />
+    <label for="output-preview">Preview</label>
+    <br />
+    <div id="output-preview"></div>
     <label for="output" id="output-label">Output</label>
     <button onclick="copyText('output')">Copy to Clipboard</button>
     <br />

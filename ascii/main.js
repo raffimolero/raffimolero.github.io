@@ -9,6 +9,7 @@ ctx.fillText("or click me idk", 50, 100);
 
 const output = document.getElementById("output");
 const outputColors = document.getElementById("output-colors");
+const outputPreview = document.getElementById("output-preview");
 const colorCountInput = document.getElementById("color-count");
 const colorPickers = document.getElementById("color-pickers");
 
@@ -22,7 +23,7 @@ let colors = [
   { name: "cyan", color: hexToRgb("#cde6ff") },
   { name: "white", color: hexToRgb("#ffffff") },
 ];
-let bgCol = colors.shift(); // Remove first color (background)
+let bgCol = colors[0]; // Remove first color (background)
 colorCountInput.value = colors.length; // Set initial color count
 function updateColorCount() {
   let count = parseInt(colorCountInput.value, 10);
@@ -41,12 +42,12 @@ function updateColorCount() {
   colorPickers.innerHTML = "";
   colors.forEach((color, index) => {
     const colorDiv = document.createElement("div");
-    colorDiv.className = "color-picker";
+    colorDiv.className = "hbox color-picker";
 
     const hex = rgbToHex(color.color.slice(0, 3)); // Convert RGB to Hex
     colorDiv.innerHTML = `
-      <input type="color" value="${hex}" onchange="updateColor(event, ${index})">
-      <input type="text" value="${color.name}" onkeyup="updateColorName(event, ${index})"></input>
+      <input class="color-input" type="color" value="${hex}" onchange="updateColor(event, ${index})">
+      <input class="text-input" type="text" value="${color.name}" onkeyup="updateColorName(event, ${index})"></input>
     `;
     colorPickers.appendChild(colorDiv);
   });
@@ -189,10 +190,10 @@ function mixColors(rgb1, rgb2, ratio = 0.5) {
 }
 
 function posterize(rgb) {
-  let closestColor = colors[0];
+  let closestColor = colors[1];
   let minDistance = getColorDistance(rgb, closestColor.color);
   let index = 0;
-  for (let i = 1; i < colors.length; i++) {
+  for (let i = 2; i < colors.length; i++) {
     let distance = getColorDistance(rgb, colors[i].color);
 
     if (distance < minDistance) {
@@ -211,15 +212,21 @@ function posterize(rgb) {
 function processImage() {
   const asciiWidth = parseInt(document.getElementById("ascii-width").value);
   const asciiHeight = parseInt(document.getElementById("ascii-height").value);
-  const chunkWidth = Math.floor(canvas.width / asciiWidth);
-  const chunkHeight = Math.floor(canvas.height / asciiHeight);
+  const chunkWidth = canvas.width / asciiWidth;
+  const chunkHeight = canvas.height / asciiHeight;
 
   let asciiOutput = "";
+  let previewOutput = "";
   let prevIndex = 0;
   let width = asciiWidth;
-  for (let y = 0; y < canvas.height; y += chunkHeight) {
-    for (let x = 0; x < canvas.width; x += chunkWidth) {
-      const avgColor = getAverageColor(x, y, chunkWidth, chunkHeight);
+  for (let y = 0; y < asciiHeight; y++) {
+    for (let x = 0; x < asciiWidth; x++) {
+      const avgColor = getAverageColor(
+        Math.floor(x * chunkWidth),
+        Math.floor(y * chunkHeight),
+        Math.floor(chunkWidth),
+        Math.floor(chunkHeight)
+      );
       const {
         char,
         color: { index, color },
@@ -227,18 +234,28 @@ function processImage() {
       let next = "";
       if (prevIndex !== index && char !== " ") {
         prevIndex = index;
-        next += "$" + (index + 1) + "";
+        next += "$" + index + "";
       }
       next += char;
       asciiOutput += next;
+      const style = `
+        color: ${rgbToHex(colors[index].color)};
+      `;
+      previewOutput += `<span style="${style}">${
+        char === " " ? "&nbsp;" : char
+      }</span>`;
     }
     asciiOutput += "\n"; // New line for each row
+    previewOutput += "<br>"; // New line for each row in preview
   }
   width = Math.max(...asciiOutput.split("\n").map((line) => line.length));
   height = asciiOutput.split("\n").length - 1;
   output.cols = width + 4;
   output.rows = height + 4;
   output.value = asciiOutput;
+  outputPreview.innerHTML = `<p style="background-color: ${rgbToHex(
+    bgCol.color
+  )};">${previewOutput}</p>`;
 
   // update the color table
   processColorTable();
@@ -248,6 +265,7 @@ function processColorTable() {
   outputColors.value = colors
     .map((color, i) => `"${i + 1}": "${color.name}"`)
     .join(",\n");
+  // outputPreview.style = ;
 }
 
 function rgbToAscii(rgb) {

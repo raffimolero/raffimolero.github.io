@@ -6,11 +6,27 @@ canvas {
   max-height: 50%;
 }
 
-.color-picker input {
+span {
+  font-family: "Courier New", Courier, monospace;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+}
+
+.hbox.color-picker {
+  column-gap: 0.5em;
+}
+
+.color-picker input.color-input {
   height: 50px;
   padding: 6px;
   border: 2px solid #808080;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.color-picker input.text-input {
+  width: 6em;
+  height: 2em;
 }
