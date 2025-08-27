@@ -19,6 +19,7 @@ function cycleMode() {
   semitoneIndexToKeyMap = modes[mode].keymap;
   keyMapName = modes[mode].name;
   initKeyMap();
+  preloadAudio();
   createPianoKeys();
 }
 

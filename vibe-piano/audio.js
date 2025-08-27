@@ -12,6 +12,9 @@ const RELEASE = 0.3;
 
 async function loadKeyNote(keyData) {
   const note = keyData.note;
+  if (audioBufferCache[note] !== undefined) {
+    return;
+  }
   try {
     const response = await fetch(baseUrl + note + ".mp3");
     const arrayBuffer = await response.arrayBuffer();
