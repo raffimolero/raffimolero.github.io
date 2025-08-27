@@ -1,0 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f3f4f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.white.key:hover {
+  background-color: #e5e7eb;
+}
+
+.white.key:active,
+.white.key.active {
+  background-color: #dfe2ea;
+}
+
+.black.key:hover {
+  background-color: #686e79;
+}
+
+.black.key:active,
+.black.key.active {
+  background-color: #474a52;
+}
+
+.key:active,
+.key.active {
+  transform: translateY(2px);
+  box-shadow: none;
+}
