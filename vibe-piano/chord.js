@@ -47,5 +47,9 @@ function identifyChords(semitones) {
     }
   }
 
-  return results.length ? results : ["Unknown chord"];
+  return results.length ? results.join("/") : ["Unknown chord"];
+}
+
+function liveIdentifyChords(semitones) {
+  document.getElementById('chord-name').innerText = identifyChords(semitones);
 }

@@ -66,6 +66,7 @@ function playNote(semitone) {
   source.start();
 
   activeVoices[semitone] = { source, gainNode };
+  liveIdentifyChords(Object.keys(activeVoices));
 
   // Visual feedback
   document
@@ -88,6 +89,7 @@ function stopNote(semitone) {
   source.stop(now + RELEASE);
 
   delete activeVoices[semitone];
+  liveIdentifyChords(Object.keys(activeVoices));
 
   // Remove visual feedback
   document
