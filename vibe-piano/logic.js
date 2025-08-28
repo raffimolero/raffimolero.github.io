@@ -70,6 +70,7 @@ const whiteKeyIndices = [0, null, 1, null, 2, 3, null, 4, null, 5, null, 6];
 /**
  * Function to generate data for a single key based on semitone value
  * @param {number} semitone
+ * @param {string} char
  * @returns {{
  *  semitone: number,
  *  char: string,
@@ -79,7 +80,7 @@ const whiteKeyIndices = [0, null, 1, null, 2, 3, null, 4, null, 5, null, 6];
  *  width: number,
  * }}
  */
-function getKeyData(semitone) {
+function getKeyData(semitone, char) {
   // Constants for key generation
   const TOTAL_SEMITONES = semitoneIndexToKeyMap.length;
   const TOTAL_OCTAVES = TOTAL_SEMITONES / 12;
@@ -87,7 +88,6 @@ function getKeyData(semitone) {
   const WHITE_KEY_WIDTH_PERCENT = OCTAVE_WIDTH_PERCENT / WHITE_KEYS_PER_OCTAVE;
   const KEY_WIDTH_PERCENT = OCTAVE_WIDTH_PERCENT / KEYS_PER_OCTAVE;
 
-  const char = semitoneToKeyMap[semitone];
   const octave = Math.floor(semitone / 12);
   const octaveNoteIndex = semitone % 12;
   const whiteKeyIndex = whiteKeyIndices[octaveNoteIndex];

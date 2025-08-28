@@ -45,6 +45,8 @@ function playNote(semitone) {
   const keyData = semitoneToKeyMap[semitone];
   if (!keyData) return;
 
+  console.log(keyData.char);
+
   const note = keyData.note;
   const audioBuffer = audioBufferCache[note];
   if (!audioBuffer) return;
@@ -57,7 +59,7 @@ function playNote(semitone) {
   source.buffer = audioBuffer;
 
   const gainNode = audioContext.createGain();
-  gainNode.gain.setValueAtTime(1, audioContext.currentTime); // full volume
+  gainNode.gain.setValueAtTime(2, audioContext.currentTime); // full volume
 
   source.connect(gainNode);
   gainNode.connect(audioContext.destination);
