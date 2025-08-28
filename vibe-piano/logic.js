@@ -9,8 +9,16 @@ let keyMapName;
 
 let mode = -1;
 let modes = [
-  { name: "piano", keymap: "q2w3er5t6y7ui9o0pzsxdcfvbhnjm,l.;/'".split("").concat(["Shift"]) },
-  { name: "grid", keymap: "1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik,9ol.0p;/-['".split("").concat(["Shift"]) },
+  {
+    name: "Piano",
+    keymap: "q2w3er5t6y7ui9o0pzsxdcfvbhnjm,l.;/'".split("").concat(["Shift"]),
+  },
+  {
+    name: "Grid",
+    keymap: "1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik,9ol.0p;/-['"
+      .split("")
+      .concat(["Shift"]),
+  },
 ];
 
 function cycleMode() {
@@ -41,7 +49,7 @@ function initKeyMap() {
 }
 
 // The note names for the 12 chromatic semitones, starting from C.
-const noteNames = [
+const semitoneToNoteName = [
   "C",
   "Db",
   "D",
@@ -65,7 +73,7 @@ const whiteKeyIndices = [0, null, 1, null, 2, 3, null, 4, null, 5, null, 6];
  * @returns {{
  *  semitone: number,
  *  char: string,
- *  note: typeof noteNames[number],
+ *  note: typeof semitoneToNoteName[number],
  *  kind: "white" | "black",
  *  left: number,
  *  width: number,
@@ -83,7 +91,7 @@ function getKeyData(semitone) {
   const octave = Math.floor(semitone / 12);
   const octaveNoteIndex = semitone % 12;
   const whiteKeyIndex = whiteKeyIndices[octaveNoteIndex];
-  const note = `${noteNames[octaveNoteIndex]}${octave}`;
+  const note = `${semitoneToNoteName[octaveNoteIndex]}${octave}`;
   const offset =
     (octave * KEYS_PER_OCTAVE - BASE_NOTE_SEMITONE) * KEY_WIDTH_PERCENT;
 
@@ -107,4 +115,3 @@ function getKeyData(semitone) {
     };
   }
 }
-

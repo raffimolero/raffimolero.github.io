@@ -10,8 +10,7 @@ const activeVoices = {};
 // Release envelope in seconds
 const RELEASE = 0.3;
 
-async function loadKeyNote(keyData) {
-  const note = keyData.note;
+async function loadKeyNote(note) {
   if (audioBufferCache[note] !== undefined) {
     return;
   }
@@ -32,7 +31,7 @@ async function loadKeyNote(keyData) {
 // Function to pre-load and decode audio files into AudioBuffers
 async function preloadAudio() {
   console.log("Pre-loading audio files...");
-  const promises = Object.values(semitoneToKeyMap).map(loadKeyNote);
+  const promises = [0,1,2,3,4,5,6,7].flatMap(octave => semitoneToNoteName.map(note => loadKeyNote(`${note}${octave}`)));
 
   try {
     await Promise.allSettled(promises);
@@ -50,8 +49,8 @@ function playNote(semitone) {
   const audioBuffer = audioBufferCache[note];
   if (!audioBuffer) return;
 
-  // Prevent retrigger if already playing
-  if (activeVoices[semitone]) return;
+  // Retrigger if already playing
+  if (activeVoices[semitone]) stopNote(semitone);
 
   // Create source + gain node
   const source = audioContext.createBufferSource();
