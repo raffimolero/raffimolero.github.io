@@ -10,6 +10,9 @@ const activeVoices = {};
 // Release envelope in seconds
 const RELEASE = 0.3;
 
+// Volume is set higher as initially it was too quiet
+const MAX_VOLUME = 2;
+
 async function loadKeyNote(note) {
   if (audioBufferCache[note] !== undefined) {
     return;
@@ -59,7 +62,7 @@ function playNote(semitone) {
   source.buffer = audioBuffer;
 
   const gainNode = audioContext.createGain();
-  gainNode.gain.setValueAtTime(2, audioContext.currentTime); // full volume
+  gainNode.gain.setValueAtTime(MAX_VOLUME, audioContext.currentTime); // full volume
 
   source.connect(gainNode);
   gainNode.connect(audioContext.destination);

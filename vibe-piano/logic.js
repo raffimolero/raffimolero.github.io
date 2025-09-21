@@ -3,7 +3,7 @@
 // Constants to handle keybinds and store key data
 const KEYS_PER_OCTAVE = 12;
 const WHITE_KEYS_PER_OCTAVE = 7;
-const BASE_NOTE_SEMITONE = KEYS_PER_OCTAVE * 2;
+const BASE_NOTE_SEMITONE = KEYS_PER_OCTAVE * 3;
 let semitoneIndexToKeyMap;
 let keyMapName;
 
@@ -11,13 +11,13 @@ let mode = -1;
 let modes = [
   {
     name: "Piano",
-    keymap: "q2w3er5t6y7ui9o0pzsxdcfvbhnjm,l.;/'".split("").concat(["Shift"]),
+    keymap: "q2w3er5t6y7ui9o0pzsxdcfvbhnjm,l.;/'".split("").concat(["shift"]),
   },
   {
     name: "Grid",
     keymap: "1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik,9ol.0p;/-['"
       .split("")
-      .concat(["Shift"]),
+      .concat(["shift"]),
   },
 ];
 

@@ -88,7 +88,7 @@ function createPianoKeys() {
     "1234567890-".split(""),
     "qwertyuiop[".split(""),
     "asdfghjkl;'".split(""),
-    "zxcvbnm,./".split("").concat("Shift"),
+    "zxcvbnm,./".split("").concat("shift"),
   ];
   const gridKeys = document.getElementById("grid-keys");
   gridKeys.innerHTML = GRID.map((row) => row.map(GridKey).join("")).join("");
@@ -104,14 +104,14 @@ function setupEventListeners() {
   document.addEventListener("keydown", (event) => {
     // Prevent continuous sound if the key is held down.
     if (event.repeat) return;
-    const semitone = keyToSemitoneMap[event.key];
+    const semitone = keyToSemitoneMap[event.key.toLowerCase()];
     if (semitone !== undefined) {
       playNote(semitone);
     }
   });
 
-  document.addEventListener("keyup", (e) => {
-    const semitone = keyToSemitoneMap[event.key];
+  document.addEventListener("keyup", (event) => {
+    const semitone = keyToSemitoneMap[event.key.toLowerCase()];
     if (semitone !== undefined) {
       stopNote(semitone);
     }
