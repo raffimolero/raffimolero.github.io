@@ -1,0 +1,151 @@
+/* Main Theme */
+
+* {
+    color: #fff;
+    font-family: Comfortaa;
+    text-shadow: 2px 2px 4px #000;
+}
+
+.dark {
+    color: #456;
+}
+
+h1 {
+    font-size: 5vh;
+}
+h2 {
+    font-size: 4vh;
+}
+
+input {
+    background: radial-gradient(circle, #234, #123);
+    border-radius: 25%;
+    text-align: center;
+}
+
+body {
+    background: radial-gradient(circle, #123, #012);
+    padding: 6vh;
+}
+
+/* Problem box */
+
+div.bubble {
+    background: radial-gradient(circle, #345, #234);
+    padding: 1vh;
+    margin: 2vh;
+    border-radius: 3vh;
+    border: 1vh solid #456;
+    box-shadow: 2px 2px 4px #000;
+}
+
+#problem {
+    display: flex;
+    padding: 0 3vh;
+    text-align: center;
+    align-items: center;
+
+    height: 16vh;
+}
+
+.slot {
+    flex: 1;
+}
+
+/* types of problem boxes */
+.fraction-operations {
+    width: 36vh;
+}
+.fraction-simplification {
+    width: 24vh;
+}
+.division {
+    width: 24vh;
+}
+
+/* Fractions */
+
+.fraction {
+    text-align: center;
+    display: inline-block;
+}
+
+.bar {
+    border-bottom: 3px solid #fff;
+}
+
+/* Inputs */
+
+.fraction input {
+    width: 4vh;
+    height: 5vh;
+    font-size: 3.5vh;
+}
+
+input.whole {
+    width: 7vh;
+    height: 10vh;
+    font-size: 5vh;
+}
+
+.numerator,
+.denominator {
+    margin: 10%;
+}
+
+/* Correct/Wrong flashes */
+
+.flash-green {
+    animation: green 500ms normal forwards ease-in;
+}
+.flash-red {
+    animation: red 500ms normal forwards ease-in;
+}
+
+/* NOTE: both keyframes supply .dark */
+@keyframes green {
+    from {
+        border-color: #cfc;
+        color: #484;
+    }
+    50% {
+        border-color: #2e2;
+    }
+    to {
+        border-color: #456;
+        color: #456;
+    }
+}
+
+@keyframes red {
+    from {
+        border-color: #fcc;
+        color: #844;
+    }
+    50% {
+        border-color: #e22;
+    }
+    to {
+        border-color: #456;
+        color: #456;
+    }
+}
+
+/* Score */
+
+#score,
+#countdown {
+    display: inline-block;
+}
+
+#countdown {
+    margin-left: 1vh;
+}
+
+/* TODO: Radio Buttons */
+
+.container {
+}
+
+radio {
+}
