@@ -1,16 +1,17 @@
 {
-    "overrides": [
-        {
-            "files": "*.html",
-            "options": {
-                "tabWidth": 2
-            }
-        },
-        {
-            "files": ["*.js", "*.css"],
-            "options": {
-                "tabWidth": 4
-            }
-        }
-    ]
+  "overrides": [
+    {
+      "files": "*.html",
+      "options": {
+        "tabWidth": 2
+      }
+    },
+    {
+      "files": ["*.js", "*.css"],
+      "options": {
+        "singleQuote": true,
+        "tabWidth": 4
+      }
+    }
+  ]
 }
