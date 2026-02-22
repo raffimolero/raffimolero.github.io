@@ -57,12 +57,9 @@ async function main() {
         seed: 1737846550,
     });
     const recorder = new InputRecorder(replay);
-    recorder.ontrigger = () => {
-        const last =
-            recorder.replay.actions[recorder.replay.actions.length - 1];
-
-        console.log(last);
-        if (last.keycode === 'Numpad0') {
+    recorder.ontrigger = (e) => {
+        console.log(e);
+        if (e.keycode === 'Numpad0') {
             console.log(recorder.replay.actions);
         }
     };

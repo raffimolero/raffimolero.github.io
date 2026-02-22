@@ -43,7 +43,7 @@ class InputRecorder {
     replay;
     /** @type {Set<string>} */
     held;
-    /** @type {(() => void) | null} */
+    /** @type {((input: Input) => void) | null} */
     ontrigger;
 
     /**
@@ -70,7 +70,7 @@ class InputRecorder {
         };
         this.replay.push(input);
         if (this.ontrigger) {
-            this.ontrigger();
+            this.ontrigger(input);
         }
     }
 
