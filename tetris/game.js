@@ -46,24 +46,44 @@
  * }} Handling
  */
 
-class InputRecorder {
-    /** @type {number} */
-    start;
+class Replay {
     /** @type {Keybinds} */
     binds;
     /** @type {Input[]} */
     inputs;
-    /** @type {Set<string>} */
-    held;
 
     /**
      * @param {Keybinds} binds
      */
     constructor(binds) {
-        this.start = Date.now();
         this.binds = binds;
         this.inputs = [];
+    }
+
+    /**
+     * @param {Input} input
+     */
+    input(input) {
+        this.inputs.push(input);
+    }
+}
+
+class InputRecorder {
+    /** @type {number} */
+    start;
+    /** @type {Set<string>} */
+    held;
+    /** @type {(() => void) | null} */
+    ontrigger;
+
+    /**
+     * @param {Replay} replay
+     */
+    constructor(replay) {
+        this.start = Date.now();
+        this.replay = replay;
         this.held = new Set();
+        this.ontrigger = null;
         document.addEventListener('keydown', (e) => this.keydown(e));
         document.addEventListener('keyup', (e) => this.keyup(e));
     }
@@ -78,15 +98,17 @@ class InputRecorder {
             trigger: trigger,
             key: key,
         };
-        this.inputs.push(input);
-        console.log(this.inputs[this.inputs.length - 1]);
+        this.replay.input(input);
+        if (this.ontrigger) {
+            this.ontrigger();
+        }
     }
 
     /**
      * @param {KeyboardEvent} e
      */
     keydown(e) {
-        if (e.key in this.binds && !this.held.has(e.key)) {
+        if (e.key in this.replay.binds && !this.held.has(e.key)) {
             this.held.add(e.key);
             this.trigger('Down', e.key);
         }
@@ -96,7 +118,7 @@ class InputRecorder {
      * @param {KeyboardEvent} e
      */
     keyup(e) {
-        if (e.key in this.binds && this.held.delete(e.key)) {
+        if (e.key in this.replay.binds && this.held.delete(e.key)) {
             this.trigger('Up', e.key);
         }
     }

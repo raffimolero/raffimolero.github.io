@@ -70,7 +70,12 @@ async function main() {
     let grid = new Grid(10, 20);
     grid.set_tile(2, 7, 5);
     log(grid.str());
-    console.log(new InputRecorder(binds_rsb).start);
+
+    const replay = new Replay(binds_rsb);
+    const recorder = new InputRecorder(replay);
+    recorder.ontrigger = () => {
+        console.log(recorder.replay.inputs[recorder.replay.inputs.length - 1]);
+    };
 }
 
 main();
