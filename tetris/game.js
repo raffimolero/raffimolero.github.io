@@ -1,18 +1,6 @@
 // @ts-check
-// NOTE: i should really just use proper typescript at this point
 
 /**
- * @typedef {(
- * | 'Down'
- * | 'Up'
- * )} InputTrigger
- *
- * @typedef {{
- *  time: number, // ms since start,
- *  trigger: InputTrigger,
- *  key: string,
- * }} Input
- *
  * @typedef {(
  * | 'Hold'
  * | 'RotCc'
@@ -37,89 +25,146 @@
  * | { kind: 'Repeat', action: HoldableAction }
  * )} BoardEvent
  *
- * @typedef {Record<string, Action>} Keybinds
+ * @typedef {number} Tile
+ * @typedef {'I' | 'O' | 'T' | 'S' | 'Z' | 'J' | 'L'} Piece
+ *
  * @typedef {{
- *  das: number, // delayed auto shift
- *  arr: number, // auto repeat rate
- *  sdf: number, // soft drop factor
- *  retry_delay: number,
- * }} Handling
+ *  x: number,
+ *  y: number,
+ * }} Point
+ *
+ * @typedef {Point} Offset
+ * @typedef {Record<Piece, Offset[]>} Kicks
+ *
+ * @typedef {{
+ *  cw?: Kicks,
+ *  cc?: Kicks,
+ *  180?: Kicks,
+ * }} KickTable
+ *
+ * @typedef {{
+ *  kicks: KickTable,
+ *  binds: Keybinds,
+ *  handling: Handling,
+ * }} Options
+ *
+ * @typedef {{
+ *  seed: number, // strictly necessary
+ * }} Setup
+ *
+ * @typedef {{
+ *  next: () => number,
+ *  nextFloat: () => number,
+ *  shuffleArray: <T>(array: T[]) => T[],
+ * }} Rng
  */
 
-class Replay {
-    /** @type {Keybinds} */
-    binds;
-    /** @type {Input[]} */
-    inputs;
+const PIECES = 'ZLOSIJT';
 
-    /**
-     * @param {Keybinds} binds
-     */
-    constructor(binds) {
-        this.binds = binds;
-        this.inputs = [];
+/**
+ * https://github.com/lemoncove/tetrio-bot-docs/blob/master/Piece_RNG.md
+ * @param {number} seed
+ * @returns {Rng}
+ */
+function new_rng(seed) {
+    let t = seed % 2147483647;
+
+    if (t <= 0) {
+        t += 2147483646;
     }
 
-    /**
-     * @param {Input} input
-     */
-    input(input) {
-        this.inputs.push(input);
-    }
+    return {
+        next: function () {
+            return (t = (16807 * t) % 2147483647);
+        },
+        nextFloat: function () {
+            return (this.next() - 1) / 2147483646;
+        },
+        shuffleArray: function (array) {
+            if (array.length == 0) {
+                return array;
+            }
+
+            for (let i = array.length - 1; i != 0; i--) {
+                const r = Math.floor(this.nextFloat() * (i + 1));
+                [array[i], array[r]] = [array[r], array[i]];
+            }
+
+            return array;
+        },
+    };
 }
 
-class InputRecorder {
+/**
+ * Tests whether the RNG matches Tetr.io
+ */
+function test_7bag() {
+    // seed and first 2 bags taken from one of my replays
+    const rng = new_rng(1737846550);
+    const expected = ['TOSIJLZ', 'ISJOLZT'];
+
+    let fail = false;
+    for (let i = 0; i < expected.length; i++) {
+        const shuffled = rng.shuffleArray([...PIECES]);
+        if (expected[i] !== shuffled.join('')) {
+            fail = true;
+        }
+    }
+    if (fail) {
+        console.log('7bag - FAILED');
+    } else {
+        console.log('7bag - PASSED');
+    }
+}
+test_7bag();
+
+class Game {
+    // TODO: params
+    /**
+     * @param {Setup} setup
+     */
+    constructor({}) {}
+}
+
+class Grid {
     /** @type {number} */
-    start;
-    /** @type {Set<string>} */
-    held;
-    /** @type {(() => void) | null} */
-    ontrigger;
+    w;
+    /** @type {number} */
+    h;
+    /** @type {Tile[][]} */
+    grid;
 
     /**
-     * @param {Replay} replay
+     * @param {number} w
+     * @param {number} h
      */
-    constructor(replay) {
-        this.start = Date.now();
-        this.replay = replay;
-        this.held = new Set();
-        this.ontrigger = null;
-        document.addEventListener('keydown', (e) => this.keydown(e));
-        document.addEventListener('keyup', (e) => this.keyup(e));
+    constructor(w, h) {
+        this.w = w;
+        this.h = h;
+        const row = Array(w).fill(0);
+        this.grid = Array.from({ length: h }, (_) => [...row]);
     }
 
     /**
-     * @param {InputTrigger} trigger
-     * @param {string} key
+     * @param {number} x
+     * @param {number} y
      */
-    trigger(trigger, key) {
-        const input = {
-            time: Date.now() - this.start,
-            trigger: trigger,
-            key: key,
-        };
-        this.replay.input(input);
-        if (this.ontrigger) {
-            this.ontrigger();
-        }
+    get_tile(x, y) {
+        return this.grid[y][x];
     }
 
     /**
-     * @param {KeyboardEvent} e
+     * @param {number} x
+     * @param {number} y
+     * @param {} v
      */
-    keydown(e) {
-        if (e.key in this.replay.binds && !this.held.has(e.key)) {
-            this.held.add(e.key);
-            this.trigger('Down', e.key);
-        }
+    set_tile(x, y, v) {
+        this.grid[y][x] = v;
     }
 
-    /**
-     * @param {KeyboardEvent} e
-     */
-    keyup(e) {
-        if (e.key in this.replay.binds && this.held.delete(e.key)) {
-            this.trigger('Up', e.key);
-        }
+    str() {
+        return this.grid
+            .map((row) => row.map((tile) => `${tile} `).join(''))
+            .join('\n');
     }
 }
