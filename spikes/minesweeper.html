@@ -143,6 +143,7 @@ td {
   <button onclick='reset()'>New Game</button>
   <h1 id='timer' />
   <h1 id='best'>Best: --:--</h1>
+  <h1 id='flags'>Flags: --/--</h1>
   <br>
   <h1 id='controls'>Controls:</h1>
   <ul>
@@ -169,6 +170,7 @@ const boom = '💥';
 let w = 0;
 let h = 0;
 let mines = 0;
+let flags = 0;
 let spaces;
 let alive;
 let firstClick;
@@ -212,6 +214,7 @@ function formatTime(time) {
 
 const timerLabel = document.getElementById('timer');
 const bestLabel = document.getElementById('best');
+const flagsLabel = document.getElementById('flags');
 function updateTimer() {
   timerLabel.innerHTML = `Time: ${formatTime(time)}`;
 }
@@ -239,6 +242,8 @@ function reset() {
   spaces = w*h - mines;
   alive = true;
   firstClick = true;
+  flags = 0;
+  updateFlags();
   
   for (let y = 0; y < h; y++) {
     const row = document.createElement('tr');
@@ -264,6 +269,10 @@ function end() {
 
 function updateBest() {
   bestLabel.innerHTML = `Best: ${formatTime(best)}`;
+}
+
+function updateFlags() {
+  flagsLabel.innerHTML = `Flags: ${flags}/${mines}`;
 }
 
 function win() {
@@ -375,9 +384,12 @@ const flag = tile => {
   tile.flagged ^= true;
   if (tile.flagged) {
     tile.innerHTML = flagged;
+    flags++;
   } else {
     tile.innerHTML = '';
+    flags--;
   }
+  updateFlags();
 };
 
 function trySurround(tile, x, y) {
